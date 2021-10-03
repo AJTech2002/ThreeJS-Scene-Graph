@@ -42,18 +42,15 @@ export default class Scene {
     }
 
     parseScene() {
-        let gameObjects = SceneJSON.gameObjects;
+        let sceneGameObjects = SceneJSON.gameObjects;
 
-        gameObjects.forEach((go) => {
-
+        sceneGameObjects.forEach((go) => {
             let createdGO = new GameObject(go.name);
+            createdGO.parentName = go.parent;
 
             if (createdGO) {
-
                 go.components.forEach((co) => {
-
                     let componentProps = {};
-
                     //Go through each prop name
                     co.props.forEach((prop) => {
                         let foundProp = returnValidatedProperty(co[prop], returnProperty(co.name, prop).type);
@@ -62,13 +59,17 @@ export default class Scene {
 
                     let newComponent = new Components[co.name](co.name, createdGO, componentProps);
                     createdGO.attachComponent(newComponent);
-
                 });
-
             }
 
             this.addGameObject(createdGO);
+        });
 
+        this.gameObjects.forEach((go) => {
+            if (go.parentName !== "") {
+                let foundObject = this.findGameObject(go.parentName);
+                if (foundObject) go.setParent(foundObject);
+            }
         });
 
     }

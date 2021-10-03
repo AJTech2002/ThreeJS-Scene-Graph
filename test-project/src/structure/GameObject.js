@@ -4,6 +4,9 @@ export default class GameObject {
         this.instantiated = false;
         this.name = name;
         this.components = [];
+
+        this.parentName = "";
+        this.parent = null;
     }
 
     awake() {
@@ -15,6 +18,11 @@ export default class GameObject {
         this.components.forEach((c) => {
             c?.awake();
         });
+    }
+
+    setParent(gameObject) {
+        console.log(gameObject);
+        this.parent = gameObject;
     }
 
     findComponent(name) {

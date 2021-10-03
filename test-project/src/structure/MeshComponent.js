@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Euler, Vector3 } from 'three';
 import GameComponent from './GameComponent';
 
 export default class MeshComponent extends GameComponent {
@@ -18,9 +19,15 @@ export default class MeshComponent extends GameComponent {
     update() {
         super.update();
         if (this.mesh) {
-            this.mesh.position.copy(this.gameObject.transform.position);
-            this.mesh.rotation.copy(this.gameObject.transform.rotation);
-            this.mesh.scale.copy(this.gameObject.transform.scale);
+
+            let outputScale = new Vector3().setFromMatrixScale(this.gameObject.transform.matrix);
+            let outputRotation = new Euler().setFromRotationMatrix(this.gameObject.transform.matrix);
+            let outputPosition = new Vector3().setFromMatrixPosition(this.gameObject.transform.matrix);
+
+            this.mesh.scale.copy(outputScale);
+            this.mesh.rotation.copy(outputRotation);
+            this.mesh.position.copy(outputPosition);
+
             this.mesh.updateMatrixWorld();
         }
     }
