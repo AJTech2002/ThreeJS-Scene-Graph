@@ -10,7 +10,7 @@ export default class Scene {
   public renderer: THREE.Renderer;
   public clock: THREE.Clock;
   public gameObjects: GameObject[];
-  public externalUpdate: any;
+  public externalUpdate: null | ((delta?: number) => void);
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -25,73 +25,78 @@ export default class Scene {
     this.clock = new THREE.Clock();
 
     this.render = this.render.bind(this);
+    this.externalUpdate = null;
 
     this.gameObjects = [];
   }
 
-  setup(domElement: HTMLElement, externalUpdate: any) {
+  setup(domElement: HTMLElement, externalUpdate: Scene["externalUpdate"]) {
     this.externalUpdate = externalUpdate;
     domElement.appendChild(this.renderer.domElement);
   }
 
-  addGameObject(go: GameObject) {
-    this.gameObjects.push(go);
+  addGameObject(gameObject: GameObject) {
+    this.gameObjects.push(gameObject);
 
-    go.scene = this;
-    go.threeJSScene = this.scene;
-    go.instantiated = true;
+    gameObject.scene = this;
+    gameObject.threeJSScene = this.scene;
+    gameObject.instantiated = true;
 
-    go.awake();
+    gameObject.awake();
   }
 
   findGameObject(name: string) {
-    for (let i = 0; i < this.gameObjects.length; i++) {
-      if (this.gameObjects[i].name === name) return this.gameObjects[i];
-    }
-
-    return null;
+    return this.gameObjects.find((e) => e.name === name) || null;
   }
 
   parseScene() {
-    let gameObjects = SceneJSON.gameObjects;
+    const gameObjects = SceneJSON.gameObjects;
 
-    gameObjects.forEach((go) => {
-      let createdGO = new GameObject(go.name);
+    // Loop through each of the game objects in the JSON list
+    for (const jsonObject of gameObjects) {
+      const gameObject = new GameObject(jsonObject.name);
 
-      if (createdGO) {
-        go.components.forEach((co) => {
-          let componentProps: Record<string, any> = {};
+      // Attach all the components in the JSON to the game object
+      for (const jsonComponent of jsonObject.components) {
+        const componentProps: Record<string, any> = {};
 
-          //Go through each prop name
-          co.props.forEach((prop) => {
-            const innerCo = co as Record<string, any>;
-            let foundProp = returnValidatedProperty(
-              innerCo[prop],
-              returnProperty(co.name, prop).type
-            );
-            componentProps[prop] = foundProp;
-          });
+        // Go through each prop name, and parse the given data
 
-          type ComponentName = keyof typeof Components;
-          let newComponent = new Components[co.name as ComponentName](
-            co.name,
-            createdGO,
-            componentProps
+        // TODO: This parsing logic is bad
+        for (const prop of jsonComponent.props) {
+          const innerCo = jsonComponent as Record<string, any>;
+          let foundProp = returnValidatedProperty(
+            innerCo[prop],
+            returnProperty(jsonComponent.name, prop).type
           );
-          createdGO.attachComponent(newComponent);
-        });
+          componentProps[prop] = foundProp;
+        }
+
+        // `jsonComponent.name` should be one of the component names, otherwise
+        // the program will crash
+        // TODO: Scene validation; maybe?
+        type ComponentName = keyof typeof Components;
+        const ComponentClass = Components[jsonComponent.name as ComponentName];
+
+        const component = new ComponentClass(
+          jsonComponent.name,
+          gameObject,
+          componentProps
+        );
+        gameObject.attachComponent(component);
       }
 
-      this.addGameObject(createdGO);
-    });
+      this.addGameObject(gameObject);
+    }
   }
 
   render() {
-    let delta = this.clock.getDelta();
+    const delta = this.clock.getDelta();
     requestAnimationFrame(this.render);
-    this.gameObjects.forEach((go) => {
-      go.update(delta);
-    });
+
+    for (const gameObject of this.gameObjects) {
+      gameObject.update(delta);
+    }
 
     this.renderer.render(this.scene, this.camera);
 

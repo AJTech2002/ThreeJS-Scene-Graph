@@ -32,11 +32,7 @@ export default class GameObject {
   }
 
   findComponent(name: string) {
-    for (let i = 0; i < this.components.length; i++) {
-      if (this.components[i].name === name) return this.components[i];
-    }
-
-    return null;
+    return this.components.find((e) => e.name === name) || null;
   }
 
   attachComponent(component: GameComponent) {
