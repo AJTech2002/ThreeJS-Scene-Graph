@@ -1,0 +1,6 @@
+{
+    "speed": {
+        "type": "float",
+        "default": 2.0
+    }
+}

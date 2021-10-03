@@ -1,0 +1,26 @@
+{
+    "position": {
+        "type": "vec3",
+        "default": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "rotation": {
+        "type": "eul3",
+        "default": [
+            0.0,
+            0.0,
+            0.0
+        ]
+    },
+    "scale": {
+        "type": "vec3",
+        "default": [
+            1.0,
+            1.0,
+            1.0
+        ]
+    }
+}

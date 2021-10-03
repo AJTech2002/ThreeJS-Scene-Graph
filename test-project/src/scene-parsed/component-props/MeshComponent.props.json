@@ -1,0 +1,10 @@
+{
+    "primitive": {
+        "type": "bool",
+        "default": false
+    },
+    "primitiveShape": {
+        "type": "string",
+        "default": "Cube"
+    }
+}

@@ -1,0 +1,48 @@
+{
+    "gameObjects": [
+        {
+            "name": "Cube",
+            "components": [
+                {
+                    "name": "TransformComponent",
+                    "props": [
+                        "position",
+                        "rotation",
+                        "scale"
+                    ],
+                    "position": [
+                        1,
+                        -1,
+                        0.0
+                    ],
+                    "rotation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "scale": [
+                        1,
+                        1,
+                        0.5
+                    ]
+                },
+                {
+                    "name": "MeshComponent",
+                    "props": [
+                        "primitive",
+                        "primitiveShape"
+                    ],
+                    "primitive": true,
+                    "primitiveShape": "Cube"
+                },
+                {
+                    "name": "MoveObject",
+                    "props": [
+                        "speed"
+                    ],
+                    "speed": 2
+                }
+            ]
+        }
+    ]
+}
