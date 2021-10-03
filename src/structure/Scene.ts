@@ -29,12 +29,12 @@ export default class Scene {
     this.gameObjects = [];
   }
 
-  setup(domElement, externalUpdate) {
+  setup(domElement: HTMLElement, externalUpdate: any) {
     this.externalUpdate = externalUpdate;
     domElement.appendChild(this.renderer.domElement);
   }
 
-  addGameObject(go) {
+  addGameObject(go: GameObject) {
     this.gameObjects.push(go);
 
     go.scene = this;
@@ -44,7 +44,7 @@ export default class Scene {
     go.awake();
   }
 
-  findGameObject(name) {
+  findGameObject(name: string) {
     for (let i = 0; i < this.gameObjects.length; i++) {
       if (this.gameObjects[i].name === name) return this.gameObjects[i];
     }
@@ -60,18 +60,20 @@ export default class Scene {
 
       if (createdGO) {
         go.components.forEach((co) => {
-          let componentProps = {};
+          let componentProps: Record<string, any> = {};
 
           //Go through each prop name
           co.props.forEach((prop) => {
+            const innerCo = co as Record<string, any>;
             let foundProp = returnValidatedProperty(
-              co[prop],
+              innerCo[prop],
               returnProperty(co.name, prop).type
             );
             componentProps[prop] = foundProp;
           });
 
-          let newComponent = new Components[co.name](
+          type ComponentName = keyof typeof Components;
+          let newComponent = new Components[co.name as ComponentName](
             co.name,
             createdGO,
             componentProps

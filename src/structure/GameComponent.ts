@@ -5,7 +5,7 @@ export default class GameComponent {
   public gameObject: GameObject;
   public props: any;
 
-  constructor(name, gameObject, componentProps) {
+  constructor(name: string, gameObject: GameObject, componentProps: any) {
     this.name = name;
     this.gameObject = gameObject;
     this.props = componentProps;
@@ -13,5 +13,5 @@ export default class GameComponent {
 
   awake() {}
 
-  update(dt?) {}
+  update(dt?: number) {}
 }

@@ -1,15 +1,16 @@
 import * as THREE from "three";
 import GameComponent from "./GameComponent";
+import GameObject from "./GameObject";
 
 export default class MeshComponent extends GameComponent {
   public mesh: THREE.Mesh | null;
 
-  constructor(name, gameObject, componentProps) {
+  constructor(name: string, gameObject: GameObject, componentProps: any) {
     super(name, gameObject, componentProps);
     this.mesh = null;
   }
 
-  awake() {
+  override awake() {
     super.awake();
     if (this.props.primitive) {
       if (
@@ -24,7 +25,7 @@ export default class MeshComponent extends GameComponent {
     }
   }
 
-  update() {
+  override update() {
     super.update();
     if (this.mesh && this.gameObject.transform) {
       this.mesh.position.copy(this.gameObject.transform.position);
