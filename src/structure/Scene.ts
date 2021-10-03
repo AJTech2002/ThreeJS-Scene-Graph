@@ -5,11 +5,11 @@ import { Components, returnProperty } from "../scene-parsed/components";
 import { returnValidatedProperty } from "../scene-parsed/utility/propGenerator";
 
 export default class Scene {
-  public scene: any;
-  public camera: any;
-  public renderer: any;
-  public clock: any;
-  public gameObjects: any;
+  public scene: THREE.Scene;
+  public camera: THREE.Camera;
+  public renderer: THREE.Renderer;
+  public clock: THREE.Clock;
+  public gameObjects: GameObject[];
   public externalUpdate: any;
 
   constructor() {

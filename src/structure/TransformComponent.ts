@@ -1,9 +1,10 @@
+import { Euler, Vector3 } from "three";
 import GameComponent from "./GameComponent";
 
 export default class TransformComponent extends GameComponent {
-  public position: any;
-  public rotation: any;
-  public scale: any;
+  public position: Vector3;
+  public rotation: Euler;
+  public scale: Vector3;
 
   constructor(name, gameObject, componentProps) {
     super(name, gameObject, componentProps);

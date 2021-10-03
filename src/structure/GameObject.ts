@@ -1,17 +1,25 @@
+import GameComponent from "./GameComponent";
+import TransformComponent from "./TransformComponent";
+
 export default class GameObject {
-  public instantiated: any;
-  public name: any;
-  public components: any;
-  public transform: any;
+  public instantiated: boolean;
+  public name: string;
+  public components: GameComponent[];
+  public transform: TransformComponent | null;
+  public threeJSScene: THREE.Scene | null;
 
   constructor(name) {
     this.instantiated = false;
     this.name = name;
     this.components = [];
+    this.transform = null;
+    this.threeJSScene = null;
   }
 
   awake() {
-    this.transform = this.findComponent("TransformComponent");
+    this.transform = this.findComponent(
+      "TransformComponent"
+    ) as TransformComponent | null;
 
     if (!this.transform) console.error("No transform found on : " + this.name);
 

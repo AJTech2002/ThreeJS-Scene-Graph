@@ -1,6 +1,8 @@
+import GameObject from "./GameObject";
+
 export default class GameComponent {
-  public name: any;
-  public gameObject: any;
+  public name: string;
+  public gameObject: GameObject;
   public props: any;
 
   constructor(name, gameObject, componentProps) {

@@ -1,7 +1,7 @@
 import GameComponent from "./GameComponent";
 
 export default class MoveObject extends GameComponent {
-  public time: any;
+  public time: number = 0;
 
   awake() {
     this.time = 0;
@@ -9,9 +9,11 @@ export default class MoveObject extends GameComponent {
 
   update(dt) {
     this.time += dt;
-    this.gameObject.transform.position.x = Math.sin(
-      this.time * this.props.speed
-    );
-    this.gameObject.transform.rotation.x += dt;
+    if (this.gameObject.transform) {
+      this.gameObject.transform.position.x = Math.sin(
+        this.time * this.props.speed
+      );
+      this.gameObject.transform.rotation.x += dt;
+    }
   }
 }
