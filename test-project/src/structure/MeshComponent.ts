@@ -27,10 +27,21 @@ export default class MeshComponent extends GameComponent {
 
   override update() {
     super.update();
-    if (this.mesh && this.gameObject.transform) {
-      this.mesh.position.copy(this.gameObject.transform.position);
-      this.mesh.rotation.copy(this.gameObject.transform.rotation);
-      this.mesh.scale.copy(this.gameObject.transform.scale);
+    if (this.mesh && this.gameObject.transform?.matrix) {
+      const outputScale = new THREE.Vector3().setFromMatrixScale(
+        this.gameObject.transform.matrix
+      );
+      const outputRotation = new THREE.Euler().setFromRotationMatrix(
+        this.gameObject.transform.matrix
+      );
+      const outputPosition = new THREE.Vector3().setFromMatrixPosition(
+        this.gameObject.transform.matrix
+      );
+
+      this.mesh.scale.copy(outputScale);
+      this.mesh.rotation.copy(outputRotation);
+      this.mesh.position.copy(outputPosition);
+
       this.mesh.updateMatrixWorld();
     }
   }

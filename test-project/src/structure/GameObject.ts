@@ -9,6 +9,8 @@ export default class GameObject {
   public components: GameComponent[];
   public transform: TransformComponent | null;
   public threeJSScene: THREE.Scene | null;
+  public parent: GameObject | null;
+  public parentName: string;
 
   constructor(name: string) {
     this.instantiated = false;
@@ -17,6 +19,8 @@ export default class GameObject {
     this.transform = null;
     this.threeJSScene = null;
     this.scene = null;
+    this.parent = null;
+    this.parentName = "";
   }
 
   awake() {
@@ -29,6 +33,11 @@ export default class GameObject {
     this.components.forEach((c) => {
       c?.awake();
     });
+  }
+
+  setParent(gameObject: GameObject) {
+    console.log(gameObject);
+    this.parent = gameObject;
   }
 
   findComponent(name: string) {

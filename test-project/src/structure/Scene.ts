@@ -55,6 +55,7 @@ export default class Scene {
     // Loop through each of the game objects in the JSON list
     for (const jsonObject of gameObjects) {
       const gameObject = new GameObject(jsonObject.name);
+      gameObject.parentName = jsonObject.parent;
 
       // Attach all the components in the JSON to the game object
       for (const jsonComponent of jsonObject.components) {
@@ -87,6 +88,13 @@ export default class Scene {
       }
 
       this.addGameObject(gameObject);
+    }
+
+    for (const gameObject of this.gameObjects) {
+      if (gameObject.parentName !== "") {
+        const foundParent = this.findGameObject(gameObject.parentName);
+        if (foundParent) gameObject.setParent(foundParent);
+      }
     }
   }
 
