@@ -62,13 +62,13 @@
                         0.0
                     ],
                     "rotation": [
-                        30.0,
-                        20.0,
-                        0.0
+                        270,
+                        270,
+                        90
                     ],
                     "scale": [
                         1,
-                        1,
+                        2,
                         1
                     ]
                 },
@@ -80,6 +80,13 @@
                     ],
                     "primitive": true,
                     "primitiveShape": "Cube"
+                },
+                {
+                    "name": "MoveObject",
+                    "props": [
+                        "speed"
+                    ],
+                    "speed": 2
                 }
             ]
         }
