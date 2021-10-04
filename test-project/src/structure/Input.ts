@@ -64,6 +64,13 @@ export default class Input {
     return false;
   }
 
+  getAdjustedMousePosition(): Vector2 {
+    let mouse = new Vector2();
+    mouse.x = (this!.mousePosition.x / window.innerWidth) * 2 - 1;
+    mouse.y = -(this!.mousePosition.y / window.innerHeight) * 2 + 1;
+    return mouse;
+  }
+
   getRawHorizontal(): number {
     if (this.keyIsPressed("A")) return -1;
     if (this.keyIsPressed("D")) return 1;

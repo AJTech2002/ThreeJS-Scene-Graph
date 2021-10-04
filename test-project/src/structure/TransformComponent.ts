@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Euler, Vector3 } from "three";
 import GameComponent from "./GameComponent";
 import GameObject from "./GameObject";
 
@@ -28,6 +29,26 @@ export default class TransformComponent extends GameComponent {
       quat.clone(),
       this.scale.clone()
     );
+  }
+
+  getTransformedPosition(): Vector3 {
+    if (!this.matrix) return this.position;
+    const outputPosition = new THREE.Vector3().setFromMatrixPosition(
+      this.matrix
+    );
+    return outputPosition;
+  }
+
+  getTransformedRotation(): Euler {
+    if (!this.matrix) return this.rotation;
+    const outputRotation = new THREE.Euler().setFromRotationMatrix(this.matrix);
+    return outputRotation;
+  }
+
+  getTransformedScale(): Vector3 {
+    if (!this.matrix) return this.scale;
+    const outputScale = new THREE.Vector3().setFromMatrixPosition(this.matrix);
+    return outputScale;
   }
 
   override update() {

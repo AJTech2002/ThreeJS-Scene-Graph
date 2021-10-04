@@ -33,6 +33,7 @@ export default class GameObject {
 
     this.components.forEach((c) => {
       c.input = this.getInput();
+      c.transform = this.transform;
       c?.awake();
     });
   }

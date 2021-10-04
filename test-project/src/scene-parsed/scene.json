@@ -49,7 +49,7 @@
         },
         {
             "name": "Cube0",
-            "parent": "Cube",
+            "parent": "None",
             "components": [
                 {
                     "name": "TransformComponent",
@@ -82,6 +82,39 @@
                     ],
                     "primitive": true,
                     "primitiveShape": "Cube"
+                }
+            ]
+        },
+        {
+            "name": "Camera",
+            "parent": "Cube",
+            "components": [
+                {
+                    "name": "TransformComponent",
+                    "props": [
+                        "position",
+                        "rotation",
+                        "scale"
+                    ],
+                    "position": [
+                        0,
+                        2,
+                        0.0
+                    ],
+                    "rotation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                {
+                    "name": "CameraComponent",
+                    "props": []
                 }
             ]
         }

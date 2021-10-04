@@ -4,24 +4,21 @@ import GameObject from "./GameObject";
 import { Components, returnProperty } from "../scene-parsed/components";
 import { returnValidatedProperty } from "../scene-parsed/utility/propGenerator";
 import Input from "./Input";
+import { Vector2 } from "three";
 
 export default class Scene {
   public scene: THREE.Scene;
-  public camera: THREE.Camera;
+  public activeCamera: THREE.Camera | null;
   public renderer: THREE.Renderer;
   public clock: THREE.Clock;
   public gameObjects: GameObject[];
   public externalUpdate: null | ((delta?: number) => void);
   public inputSystem: Input;
+  private raycaster: THREE.Raycaster | null = null;
 
   constructor() {
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+    this.activeCamera = null;
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.clock = new THREE.Clock();
@@ -32,6 +29,8 @@ export default class Scene {
     this.gameObjects = [];
 
     this.inputSystem = new Input(this);
+
+    this.raycaster = new THREE.Raycaster();
   }
 
   setup(domElement: HTMLElement, externalUpdate: Scene["externalUpdate"]) {
@@ -47,6 +46,16 @@ export default class Scene {
         go.inputEvent(type, key);
       }
     });
+  }
+
+  screenRaycast(screenPosition: Vector2): THREE.Intersection[] {
+    if (this.activeCamera) {
+      this.raycaster!.setFromCamera(screenPosition, this.activeCamera);
+
+      return this.raycaster!.intersectObjects(this.scene.children);
+    }
+
+    return [];
   }
 
   addGameObject(gameObject: GameObject) {
@@ -120,7 +129,7 @@ export default class Scene {
       gameObject.update(delta);
     }
 
-    this.renderer.render(this.scene, this.camera);
+    if (this.activeCamera) this.renderer.render(this.scene, this.activeCamera);
 
     if (this.externalUpdate) this.externalUpdate(delta);
   }
