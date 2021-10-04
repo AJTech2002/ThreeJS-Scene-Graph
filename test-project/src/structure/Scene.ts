@@ -3,6 +3,7 @@ import * as SceneJSON from "../scene-parsed/scene.json";
 import GameObject from "./GameObject";
 import { Components, returnProperty } from "../scene-parsed/components";
 import { returnValidatedProperty } from "../scene-parsed/utility/propGenerator";
+import Input from "./Input";
 
 export default class Scene {
   public scene: THREE.Scene;
@@ -11,6 +12,7 @@ export default class Scene {
   public clock: THREE.Clock;
   public gameObjects: GameObject[];
   public externalUpdate: null | ((delta?: number) => void);
+  public inputSystem: Input;
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -28,11 +30,23 @@ export default class Scene {
     this.externalUpdate = null;
 
     this.gameObjects = [];
+
+    this.inputSystem = new Input(this);
   }
 
   setup(domElement: HTMLElement, externalUpdate: Scene["externalUpdate"]) {
     this.externalUpdate = externalUpdate;
     domElement.appendChild(this.renderer.domElement);
+    this.inputSystem.setup();
+  }
+
+  //Type 0 (Down), 1 (Up)
+  inputEvent(type: number, key: string) {
+    this.gameObjects.forEach((go: GameObject) => {
+      if (go.instantiated) {
+        go.inputEvent(type, key);
+      }
+    });
   }
 
   addGameObject(gameObject: GameObject) {

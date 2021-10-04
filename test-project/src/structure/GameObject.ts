@@ -1,6 +1,7 @@
 import Scene from "./Scene";
 import GameComponent from "./GameComponent";
 import TransformComponent from "./TransformComponent";
+import Input from "./Input";
 
 export default class GameObject {
   public scene: Scene | null;
@@ -31,13 +32,24 @@ export default class GameObject {
     if (!this.transform) console.error("No transform found on : " + this.name);
 
     this.components.forEach((c) => {
+      c.input = this.getInput();
       c?.awake();
     });
   }
 
   setParent(gameObject: GameObject) {
-    console.log(gameObject);
     this.parent = gameObject;
+  }
+
+  getInput(): Input | undefined {
+    return this.scene?.inputSystem;
+  }
+
+  inputEvent(type: number, key: string) {
+    this.components.forEach((comp: GameComponent) => {
+      if (type === 0) comp.onKeyDown(key);
+      else if (type === 1) comp.onKeyUp(key);
+    });
   }
 
   findComponent(name: string) {
