@@ -3,6 +3,7 @@ import GameComponent from "./GameComponent";
 import GameObject from "./GameObject";
 
 export default class MeshComponent extends GameComponent {
+  
   public mesh: THREE.Mesh | null;
 
   constructor(name: string, gameObject: GameObject, componentProps: any) {
@@ -12,13 +13,18 @@ export default class MeshComponent extends GameComponent {
 
   override awake() {
     super.awake();
+
+    if (!this.props.color) this.props.color = "ffffff";
+
     if (this.props.primitive) {
       if (
         this.props.primitiveShape === "Cube" &&
         this.gameObject.threeJSScene
       ) {
         const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshBasicMaterial({ color: 0x964b00 });
+        const material = new THREE.MeshBasicMaterial({
+          color: parseInt(this.props.color, 16),
+        });
         this.mesh = new THREE.Mesh(geometry, material);
         this.gameObject.threeJSScene.add(this.mesh);
       }

@@ -45,6 +45,10 @@ export default class GameObject {
     return this.scene?.inputSystem;
   }
 
+  findComponentOfType<T>(componentName: string): T | null {
+    return this.findComponent(componentName) as T | null;
+  }
+
   inputEvent(type: number, key: string) {
     this.components.forEach((comp: GameComponent) => {
       if (type === 0) comp.onKeyDown(key);

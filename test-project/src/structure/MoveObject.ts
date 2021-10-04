@@ -1,5 +1,6 @@
 import { Vector3 } from "three";
 import GameComponent from "./GameComponent";
+import MeshComponent from "./MeshComponent";
 
 export default class MoveObject extends GameComponent {
   public time: number = 0;
@@ -8,10 +9,16 @@ export default class MoveObject extends GameComponent {
     this.time = 0;
   }
 
-  override update(dt: number) {
-    
-    if (this.input?.keyIsPressed("A")) console.log("A is being pressed :)");
+  override onKeyDown(key: string) {
+    if (key === "a") {
+      console.log(
+        this.gameObject.findComponentOfType<MeshComponent>("MeshComponent")
+          ?.mesh
+      );
+    }
+  }
 
+  override update(dt: number) {
     let inputVector: Vector3 = new Vector3(
       this.input?.getRawHorizontal(),
       this.input?.getRawVertical(),

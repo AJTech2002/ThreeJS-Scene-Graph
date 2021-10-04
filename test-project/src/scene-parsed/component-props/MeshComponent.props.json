@@ -6,5 +6,9 @@
     "primitiveShape": {
         "type": "string",
         "default": "Cube"
+    },
+    "color": {
+        "type": "string",
+        "default": "a472c6"
     }
 }

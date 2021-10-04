@@ -16,13 +16,15 @@ export default class Input {
 
   setup() {
     document.addEventListener("keydown", (e) => {
+      if (!this.keyIsPressed(e.key.toLowerCase()))
+        this.scene?.inputEvent(0, e.key.toLowerCase());
       this.inputMappings[e.key.toLowerCase()] = true;
-      this.scene?.inputEvent(0, e.key.toLowerCase());
     });
 
     document.addEventListener("keyup", (e) => {
+      if (this.keyIsPressed(e.key.toLowerCase()))
+        this.scene?.inputEvent(1, e.key.toLowerCase());
       this.inputMappings[e.key.toLowerCase()] = false;
-      this.scene?.inputEvent(1, e.key.toLowerCase());
     });
 
     window.addEventListener("blur", (e) => {

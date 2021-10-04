@@ -31,10 +31,12 @@
                     "name": "MeshComponent",
                     "props": [
                         "primitive",
-                        "primitiveShape"
+                        "primitiveShape",
+                        "color"
                     ],
                     "primitive": true,
-                    "primitiveShape": "Cube"
+                    "primitiveShape": "Cube",
+                    "color": "3472c6"
                 },
                 {
                     "name": "MoveObject",
