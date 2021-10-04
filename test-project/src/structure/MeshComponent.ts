@@ -3,7 +3,6 @@ import GameComponent from "./GameComponent";
 import GameObject from "./GameObject";
 
 export default class MeshComponent extends GameComponent {
-  
   public mesh: THREE.Mesh | null;
 
   constructor(name: string, gameObject: GameObject, componentProps: any) {
@@ -26,6 +25,11 @@ export default class MeshComponent extends GameComponent {
           color: parseInt(this.props.color, 16),
         });
         this.mesh = new THREE.Mesh(geometry, material);
+
+        //Inject GameObject into THREE Mesh to allow access from Raycasts ex.
+        let tempMesh = this.mesh as any;
+        tempMesh.gameObject = this.gameObject;
+
         this.gameObject.threeJSScene.add(this.mesh);
       }
     }

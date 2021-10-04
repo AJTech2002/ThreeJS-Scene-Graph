@@ -19,6 +19,9 @@ export default class MoveObject extends GameComponent {
   }
 
   override update(dt: number) {
+    if (this.input?.getMouseButton(0)) {
+      console.log(this.input.mousePosition);
+    }
     let inputVector: Vector3 = new Vector3(
       this.input?.getRawHorizontal(),
       this.input?.getRawVertical(),
