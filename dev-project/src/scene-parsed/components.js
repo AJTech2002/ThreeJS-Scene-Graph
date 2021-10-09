@@ -4,7 +4,7 @@ import MoveObject from "../game-logic/MoveObject";
 import TransformComponent from "../structure/TransformComponent";
 import GameComponent from "../structure/GameComponent";
 import MeshComponent from "../structure/MeshComponent";
-import CameraComponent from "../structure/CameraComponent";
+import CameraComponent from "./defaultComponents/CameraComponent";
 
 import * as MeshComponentProps from './component-props/MeshComponent.props.json';
 import * as MoveObjectProps from './component-props/MoveObject.props.json';

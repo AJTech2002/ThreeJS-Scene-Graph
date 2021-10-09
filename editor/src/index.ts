@@ -1,4 +1,11 @@
 import express, { Request, Response, Application, Express } from "express";
+import {
+  createFolderStructure,
+  writeComponentsJS,
+  writeDefaultComponents,
+} from "./essentialFiles";
+
+import { findJSFilesInFolder, isComponent } from "./utilities";
 
 var cors = require("cors");
 
@@ -6,9 +13,34 @@ const app: Application = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
 
-app.get("/api", (req: Request, res: Response): void => {
-  res.send("Hello Typescript withs Node.js!");
+app.post("/api/initialize-project", (req: Request, res: Response): void => {
+  let data: any = req.body;
+  let location: string | undefined = data?.project?.directory;
+
+  let allJSFiles = [];
+
+  createFolderStructure(location + "/src", "scene-parse-test");
+
+  writeDefaultComponents(location + "/src/scene-parse-test/defaultComponents");
+
+  if (location) {
+    let files = findJSFilesInFolder(location + "/src");
+    let components: string[] = [];
+    files.forEach((file) => {
+      if (isComponent(file)) components.push(file);
+    });
+
+    writeComponentsJS(
+      location + "/src/scene-parse-test",
+      components,
+      location + "/src"
+    );
+  }
+
+  res.send("Done.");
 });
 
 app.listen(PORT, (): void => {

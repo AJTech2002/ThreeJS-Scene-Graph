@@ -16,7 +16,9 @@
   },
   "scripts": {
     "dev": "start cmd . /c nodemon ./src/index.ts | start cmd . /c npm start --prefix ./client",
-    "kill": "taskkill /f /im node.exe"
+    "kill": "taskkill /f /im node.exe",
+    "start": "start cmd . /c npm start --prefix ./client | nodemon ./src/index.ts",
+    "solo": "nodemon ./src/index.ts"
   },
   "author": "",
   "license": "ISC"
