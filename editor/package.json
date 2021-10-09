@@ -1,0 +1,23 @@
+{
+  "name": "editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "cors": "^2.8.5",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.3",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.13"
+  },
+  "scripts": {
+    "dev": "start cmd . /c nodemon ./src/index.ts | start cmd . /c npm start --prefix ./client",
+    "kill": "taskkill /f /im node.exe"
+  },
+  "author": "",
+  "license": "ISC"
+}
