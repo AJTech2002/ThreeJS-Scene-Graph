@@ -1,5 +1,6 @@
 import { Intersection, Vector2, Vector3 } from "three";
 import GameComponent from "../structure/GameComponent";
+import GameObject from "../structure/GameObject";
 import MeshComponent from "../structure/MeshComponent";
 
 export default class MoveObject extends GameComponent {
@@ -28,9 +29,16 @@ export default class MoveObject extends GameComponent {
         this.gameObject.scene!.screenRaycast(mousePosition);
 
       for (let i = 0; i < intersects.length; i++) {
-        console.log((intersects[i].object as any).gameObject);
+        let foundGameObject: GameObject = (intersects[i].object as any)
+          .gameObject;
+        let foundMeshComponent =
+          foundGameObject.findComponentOfType<MeshComponent>("MeshComponent");
+        (
+          foundMeshComponent?.mesh?.material as THREE.MeshBasicMaterial
+        ).color.setHex(0xffffff);
       }
     }
+
     let inputVector: Vector3 = new Vector3(
       this.input?.getRawHorizontal(),
       this.input?.getRawVertical(),

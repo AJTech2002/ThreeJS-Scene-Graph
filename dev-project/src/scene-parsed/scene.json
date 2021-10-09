@@ -18,12 +18,12 @@
                     ],
                     "rotation": [
                         0,
-                        0.0,
+                        2.0,
                         0.0
                     ],
                     "scale": [
                         2,
-                        1,
+                        0.2,
                         1
                     ]
                 },
@@ -49,7 +49,7 @@
         },
         {
             "name": "Cube0",
-            "parent": "None",
+            "parent": "Cube",
             "components": [
                 {
                     "name": "TransformComponent",
@@ -87,7 +87,7 @@
         },
         {
             "name": "Camera",
-            "parent": "Cube",
+            "parent": "None",
             "components": [
                 {
                     "name": "TransformComponent",
