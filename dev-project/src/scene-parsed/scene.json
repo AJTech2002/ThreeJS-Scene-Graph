@@ -43,7 +43,7 @@
                     "props": [
                         "speed"
                     ],
-                    "speed": 2
+                    "speed": 0.1
                 }
             ]
         },
@@ -82,6 +82,19 @@
                     ],
                     "primitive": true,
                     "primitiveShape": "Cube"
+                },
+                {
+                    "name": "ColorChanger",
+                    "props": [
+                        "rgb",
+                        "increment"
+                    ],
+                    "increment": 1.0,
+                    "rgb": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 1.0
+                    }
                 }
             ]
         },

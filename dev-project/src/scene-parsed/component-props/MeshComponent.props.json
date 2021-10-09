@@ -1,14 +1,1 @@
-{
-    "primitive": {
-        "type": "bool",
-        "default": false
-    },
-    "primitiveShape": {
-        "type": "string",
-        "default": "Cube"
-    },
-    "color": {
-        "type": "string",
-        "default": "a472c6"
-    }
-}
+{"primitive":{"type":"boolean"},"color":{"type":"string"},"primitiveShape":{"type":"string"}}

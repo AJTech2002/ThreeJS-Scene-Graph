@@ -4,17 +4,16 @@ import GameComponent from "./GameComponent";
 import GameObject from "./GameObject";
 
 export default class TransformComponent extends GameComponent {
-  public position: THREE.Vector3;
-  public rotation: THREE.Euler;
-  public scale: THREE.Vector3;
+  //[prop position vec3]
+  public position: THREE.Vector3 = new Vector3(0, 0, 0);
+  //[prop rotation eul3]
+  public rotation: THREE.Euler = new Euler(0, 0, 0);
+  //[prop scale vec3]
+  public scale: THREE.Vector3 = new Vector3(1, 1, 1);
   public matrix: THREE.Matrix4 | null;
 
   constructor(name: string, gameObject: GameObject, componentProps: any) {
     super(name, gameObject, componentProps);
-
-    this.position = this.props.position;
-    this.rotation = this.props.rotation;
-    this.scale = this.props.scale;
 
     this.matrix = null;
 

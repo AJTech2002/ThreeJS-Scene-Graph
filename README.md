@@ -1,1 +1,4 @@
-# This is a project that will last for a week probably
+# Temporary Issues
+
+- The Component Props are not auto-generated
+- The NPM Editor is being linked manually

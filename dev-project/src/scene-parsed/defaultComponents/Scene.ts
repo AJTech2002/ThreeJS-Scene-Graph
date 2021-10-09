@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import * as SceneJSON from "../scene-parsed/scene.json";
+import * as SceneJSON from "../scene.json";
 import GameObject from "./GameObject";
-import { Components, returnProperty } from "../scene-parsed/components";
-import { returnValidatedProperty } from "../scene-parsed/utility/propGenerator";
+import { Components, returnProperty } from "../components";
+import { returnValidatedProperty } from "../utility/propGenerator";
 import Input from "./Input";
 import { Vector2 } from "three";
 
@@ -105,8 +105,14 @@ export default class Scene {
         const component = new ComponentClass(
           jsonComponent.name,
           gameObject,
-          componentProps
+          componentProps //still pass in if needed
         );
+
+        //pre-assign component properties (only validated props)
+        for (const [k, v] of Object.entries(componentProps)) {
+          if (k in component) component[k] = v;
+        }
+
         gameObject.attachComponent(component);
       }
 

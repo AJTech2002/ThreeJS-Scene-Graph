@@ -27,9 +27,10 @@ export const createFolderIfDoesntExist = (pathA: string, pathB: string) => {
 export const writeFileInFolder = (
   folder: string,
   filename: string,
-  data: string
+  data: string,
+  force: boolean = false
 ) => {
-  if (!file.existsSync(folder + "/" + filename)) {
+  if (!file.existsSync(folder + "/" + filename) || force) {
     writeFileSync(folder + "/" + filename, data);
   }
 };
@@ -64,14 +65,44 @@ export const writeDefaultComponents = (rootFolder: string) => {
   });
 };
 
-export const writeComponentsJSON = (root: string, components: string[]) => {
-  components.forEach((comp) => {
+export const writeComponentsJSON = (
+  root: string,
+  components: string[],
+  componentFiles: string[],
+  force = false
+) => {
+  //Gets prop for a component (inheritance not supported yet)
+  for (let c = 0; c < componentFiles.length; c++) {
+    let file = componentFiles[c];
+    let componentJSON: any = {};
+    let text = readFileSync(file).toString();
+    let lines = text.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
+      if (line.includes("//")) {
+        if (line.includes("[") && line.includes("]") && line.includes("prop")) {
+          let propRaw = line
+            .replace("[", "")
+            .replace("]", "")
+            .replace("//", "")
+            .replace("prop", "")
+            .trim();
+          let propRawSplit = propRaw.split(" ");
+          if (propRawSplit.length === 2) {
+            componentJSON[propRawSplit[0]] = {
+              type: propRawSplit[1],
+            };
+          }
+        }
+      }
+    }
     writeFileInFolder(
       root + "/" + "component-props",
-      comp + ".props.json",
-      "{}"
+      components[c] + ".props.json",
+      JSON.stringify(componentJSON),
+      force
     );
-  });
+  }
 };
 
 export const writeComponentsJS = (
@@ -87,10 +118,10 @@ export const writeComponentsJS = (
       .substr(e.lastIndexOf("/") + 1, e.length - e.lastIndexOf("/"));
   });
 
-  writeComponentsJSON(root, componentNames);
+  writeComponentsJSON(root, componentNames, files, true);
 
   let relativeComponentPaths = files.map((e) => {
-    return e.replace(absoluteRoot, "...");
+    return e.replace(absoluteRoot, "..");
   });
 
   for (let i = 0; i < relativeComponentPaths.length; i++) {
@@ -118,5 +149,5 @@ export const writeComponentsJS = (
   fileString += "};\n";
   fileString += `return ComponentProperties[component+"Props"].default[property]; \n`;
   fileString += "}";
-  writeFileInFolder(root, "components.js", fileString);
+  writeFileInFolder(root, "components.js", fileString, true);
 };

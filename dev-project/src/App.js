@@ -1,6 +1,6 @@
 import './App.css';
 import { useEffect, useRef } from 'react';
-import Scene from './structure/Scene';
+import Scene from './scene-parsed/defaultComponents/Scene';
 
 function App() {
 

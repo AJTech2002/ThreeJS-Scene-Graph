@@ -22,9 +22,9 @@ app.post("/api/initialize-project", (req: Request, res: Response): void => {
 
   let allJSFiles = [];
 
-  createFolderStructure(location + "/src", "scene-parse-test");
+  createFolderStructure(location + "/src", "scene-parsed");
 
-  writeDefaultComponents(location + "/src/scene-parse-test/defaultComponents");
+  writeDefaultComponents(location + "/src/scene-parsed/defaultComponents");
 
   if (location) {
     let files = findJSFilesInFolder(location + "/src");
@@ -34,7 +34,7 @@ app.post("/api/initialize-project", (req: Request, res: Response): void => {
     });
 
     writeComponentsJS(
-      location + "/src/scene-parse-test",
+      location + "/src/scene-parsed",
       components,
       location + "/src"
     );

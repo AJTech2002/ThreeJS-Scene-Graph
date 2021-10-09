@@ -1,10 +1,13 @@
 import { Intersection, Vector2, Vector3 } from "three";
-import GameComponent from "../structure/GameComponent";
-import GameObject from "../structure/GameObject";
-import MeshComponent from "../structure/MeshComponent";
+import GameComponent from "../scene-parsed/defaultComponents/GameComponent";
+import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
+import GameObject from "../scene-parsed/defaultComponents/GameObject";
 
 export default class MoveObject extends GameComponent {
   public time: number = 0;
+
+  //[prop speed float]
+  public speed: number = 0;
 
   override awake() {
     this.time = 0;
@@ -43,7 +46,7 @@ export default class MoveObject extends GameComponent {
       this.input?.getRawHorizontal(),
       this.input?.getRawVertical(),
       0
-    ).multiplyScalar(dt * 10);
+    ).multiplyScalar(dt * 10 * this.speed);
 
     this.gameObject.transform?.position.add(inputVector);
   }

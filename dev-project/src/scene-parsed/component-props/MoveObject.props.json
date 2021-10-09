@@ -1,6 +1,1 @@
-{
-    "speed": {
-        "type": "float",
-        "default": 2.0
-    }
-}
+{"speed":{"type":"float"}}
