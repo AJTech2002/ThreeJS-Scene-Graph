@@ -22,6 +22,12 @@ export default class MoveObject extends GameComponent {
         0xffffff
       );
     }
+
+    if (key === "shift") this.speed *= 2;
+  }
+
+  override onKeyUp(key: string) {
+    if (key === "shift") this.speed /= 2;
   }
 
   override update(dt: number) {
@@ -43,11 +49,20 @@ export default class MoveObject extends GameComponent {
     }
 
     let inputVector: Vector3 = new Vector3(
-      this.input?.getRawHorizontal(),
-      this.input?.getRawVertical(),
-      0
+      0,
+      0,
+      -1 * this.input!.getRawVertical()
     ).multiplyScalar(dt * 10 * this.speed);
 
+    inputVector = this.transform?.transformVector(
+      inputVector.clone(),
+      true
+    ) as Vector3;
+
+    this.gameObject.transform!.rotateOnAxis(
+      new Vector3(0, 1, 0),
+      -this.input!.getRawHorizontal() * dt * 10 * this.speed
+    );
     this.gameObject.transform?.position.add(inputVector);
   }
 }

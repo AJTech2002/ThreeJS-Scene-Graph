@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Quaternion } from "three";
 import GameComponent from "./GameComponent";
 import GameObject from "./GameObject";
 
@@ -45,15 +46,19 @@ export default class MeshComponent extends GameComponent {
       const outputScale = new THREE.Vector3().setFromMatrixScale(
         this.gameObject.transform.matrix
       );
-      const outputRotation = new THREE.Euler().setFromRotationMatrix(
-        this.gameObject.transform.matrix
+      var rotMat2 = new THREE.Matrix4().extractRotation(
+        this.gameObject.transform?.matrix
       );
+      const outputRotation = new Quaternion().setFromRotationMatrix(rotMat2);
+      // const outputRotation = new Euler().setFromRotationMatrix(
+      //   this.gameObject.transform.matrix
+      // );
       const outputPosition = new THREE.Vector3().setFromMatrixPosition(
         this.gameObject.transform.matrix
       );
 
+      this.mesh.setRotationFromQuaternion(outputRotation.clone());
       this.mesh.scale.copy(outputScale);
-      this.mesh.rotation.copy(outputRotation);
       this.mesh.position.copy(outputPosition);
 
       this.mesh.updateMatrixWorld();

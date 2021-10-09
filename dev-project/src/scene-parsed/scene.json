@@ -18,13 +18,13 @@
                     ],
                     "rotation": [
                         0,
-                        2.0,
+                        0,
                         0.0
                     ],
                     "scale": [
-                        2,
-                        0.2,
-                        1
+                        1,
+                        1,
+                        2
                     ]
                 },
                 {
@@ -49,7 +49,7 @@
         },
         {
             "name": "Cube0",
-            "parent": "Cube",
+            "parent": "None",
             "components": [
                 {
                     "name": "TransformComponent",
@@ -60,8 +60,8 @@
                     ],
                     "position": [
                         0,
-                        2,
-                        0.0
+                        -2,
+                        -5.0
                     ],
                     "rotation": [
                         0,
@@ -69,9 +69,9 @@
                         0
                     ],
                     "scale": [
+                        20,
                         1,
-                        1,
-                        1
+                        20
                     ]
                 },
                 {
@@ -111,11 +111,11 @@
                     ],
                     "position": [
                         0,
-                        2,
+                        5,
                         0.0
                     ],
                     "rotation": [
-                        0,
+                        -0.3333,
                         0,
                         0
                     ],

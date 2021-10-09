@@ -1,4 +1,3 @@
-import { Intersection, Vector2, Vector3 } from "three";
 import GameComponent from "../scene-parsed/defaultComponents/GameComponent";
 import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
 
