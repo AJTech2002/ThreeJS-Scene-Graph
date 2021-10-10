@@ -12,7 +12,8 @@
   "devDependencies": {
     "@types/node": "^16.10.3",
     "express": "^4.17.1",
-    "nodemon": "^2.0.13"
+    "nodemon": "^2.0.13",
+    "three": "^0.133.1"
   },
   "scripts": {
     "dev": "start cmd . /c nodemon ./src/index.ts | start cmd . /c npm start --prefix ./client",

@@ -40,6 +40,13 @@ export default class MeshComponent extends GameComponent {
     }
   }
 
+  override executeOnEditorUpdate() {
+    if (!this.color) this.color = "ffffff";
+    (this.mesh!.material as THREE.MeshBasicMaterial).color.setHex(
+      parseInt(this.color, 16)
+    );
+  }
+
   override update() {
     super.update();
     if (this.mesh && this.gameObject.transform?.matrix) {

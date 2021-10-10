@@ -85,7 +85,8 @@ export default class TransformComponent extends GameComponent {
 
   override update() {
     this.updateTransform();
-    this.rotation.setFromQuaternion(this.quaternion);
+    //this.rotation.setFromQuaternion(this.quaternion);
+    this.quaternion.setFromEuler(this.rotation); //TODO: For editor purposes
     if (this.matrix && this.gameObject.parent?.transform?.matrix) {
       this.matrix.copy(
         this.matrix.premultiply(this.gameObject.parent.transform.matrix)

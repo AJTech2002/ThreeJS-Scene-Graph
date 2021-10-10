@@ -15,12 +15,6 @@ export default class MoveObject extends GameComponent {
 
   override onKeyDown(key: string) {
     if (key === "a") {
-      let meshComp: MeshComponent | null =
-        this.gameObject.findComponentOfType<MeshComponent>("MeshComponent");
-
-      (meshComp?.mesh?.material as THREE.MeshBasicMaterial).color.setHex(
-        0xffffff
-      );
     }
 
     if (key === "shift") this.speed *= 2;

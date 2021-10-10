@@ -13,6 +13,8 @@ export default class GameObject {
   public parent: GameObject | null;
   public parentName: string;
 
+  private lastParentName: string = "";
+
   constructor(name: string) {
     this.instantiated = false;
     this.name = name;
@@ -67,9 +69,15 @@ export default class GameObject {
   }
 
   update(dt: number) {
+    if (this.lastParentName !== this.parentName) {
+      this.parent = this.scene!.findGameObject(
+        this.parentName
+      ) as GameObject | null;
+      this.lastParentName = this.parentName;
+    }
     this.components.forEach((c) => {
       c?.update(dt);
-      c?.executeOnEditorUpdate();
+      c.executeOnEditorUpdate();
     });
   }
 }
