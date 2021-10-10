@@ -38,9 +38,9 @@ export default class Editor {
       folder.add(comp, propName);
     } else if (type === "vec3" || type === "eul3") {
       let vecFolder = folder.addFolder(propName);
-      vecFolder.add(comp[propName], "x", -10, 10);
-      vecFolder.add(comp[propName], "y", -10, 10);
-      vecFolder.add(comp[propName], "z", -10, 10);
+      vecFolder.add(comp[propName], "x", -100, 100);
+      vecFolder.add(comp[propName], "y", -100, 100);
+      vecFolder.add(comp[propName], "z", -100, 100);
     }
   }
 

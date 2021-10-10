@@ -8,7 +8,7 @@ import { Vector2 } from "three";
 
 export default class Scene {
   public scene: THREE.Scene;
-  public activeCamera: THREE.Camera | null;
+  public activeCamera: THREE.PerspectiveCamera | null;
   public renderer: THREE.Renderer;
   public clock: THREE.Clock;
   public gameObjects: GameObject[];
@@ -33,9 +33,19 @@ export default class Scene {
     this.raycaster = new THREE.Raycaster();
   }
 
+  onWindowResize() {
+    if (this.activeCamera) {
+      this.activeCamera.aspect = window.innerWidth / window.innerHeight;
+      this.activeCamera.updateProjectionMatrix();
+
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+  }
+
   setup(domElement: HTMLElement, externalUpdate: Scene["externalUpdate"]) {
     this.externalUpdate = externalUpdate;
     domElement.appendChild(this.renderer.domElement);
+    window.addEventListener("resize", this.onWindowResize.bind(this), false);
     this.inputSystem.setup();
   }
 
