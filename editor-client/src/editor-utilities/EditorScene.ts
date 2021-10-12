@@ -1,15 +1,12 @@
 import * as THREE from "three";
-import {
-  GameObject,
-  Input,
-  GameComponent,
-  Scene,
-  returnDefaultValue,
-  returnValidatedProperty,
-  DefaultComponents,
-} from "@razor/core";
+import { GameObject, Input, Scene } from "@razor/core";
 import { Vector2 } from "three";
-import { getData, projectRoot } from "../App";
+import {
+  serialize,
+  parseComponents,
+  parseSerializedJSON,
+} from "./EditorSceneParsing";
+import { getData, projectRoot } from "../server-utilities/serverHandler";
 
 export default class EditorScene extends Scene {
   public scene: THREE.Scene;
@@ -21,6 +18,10 @@ export default class EditorScene extends Scene {
   public inputSystem: Input;
   protected raycaster: THREE.Raycaster | null = null;
   public parsedComponents: any = {};
+
+  //Public functions that have been moved out
+  public serialize = serialize;
+  public parseSerializedJSON = parseSerializedJSON;
 
   constructor() {
     super();
@@ -88,166 +89,6 @@ export default class EditorScene extends Scene {
 
   findGameObject(name: string) {
     return this.gameObjects.find((e) => e.name === name) || null;
-  }
-
-  returnComponentJSON(componentName: string): Promise<any> {
-    //found JSON
-    return getData(
-      "componentJSON",
-      `?root=${projectRoot}&component=${componentName}`
-    ).then((d: string): any => {
-      try {
-        let json = JSON.parse(d);
-        return json;
-      } catch (e: any) {
-        return {};
-      }
-    });
-  }
-
-  parseType(type: string, val: any): any {
-    if (type === "vec3" || type === "eul3") {
-      return [val.x, val.y, val.z];
-    }
-
-    return val;
-  }
-
-  getComponentJSON(comp: GameComponent): any {
-    let template: any = {
-      name: comp.name,
-      props: [],
-    };
-
-    let objComp = this.parsedComponents[comp.name];
-    for (const [k, v] of Object.entries(objComp)) {
-      template.props.push(k as string);
-      if (k in comp)
-        template[k] = this.parseType((v as any).type, (comp as any)[k]);
-      else if (k in comp.props)
-        template[k] = this.parseType((v as any).type, (comp.props as any)[k]);
-    }
-
-    return template;
-  }
-
-  serialize(): string {
-    let sceneJSON: any = {
-      gameObjects: [],
-    };
-
-    this.gameObjects.forEach((go) => {
-      let goTemplate: any = {
-        name: go.name,
-        parent: go.parentName,
-        components: [],
-      };
-
-      go.components.forEach((comp) => {
-        goTemplate.components.push(this.getComponentJSON(comp));
-      });
-
-      sceneJSON.gameObjects.push(goTemplate);
-    });
-
-    return JSON.stringify(sceneJSON);
-  }
-
-  parseComponents(json: string): Promise<void>[] {
-    const SceneJSON = JSON.parse(json);
-    let promises: Promise<void>[] = [];
-    const gameObjects = SceneJSON.gameObjects;
-    if (!gameObjects) return [];
-    // Loop through each of the game objects in the JSON list
-    for (const jsonObject of gameObjects) {
-      for (const jsonComponent of jsonObject.components) {
-        promises.push(
-          this.returnComponentJSON(jsonComponent.name).then((d) => {
-            this.parsedComponents[jsonComponent.name] = d;
-          })
-        );
-      }
-    }
-
-    console.log(this.parsedComponents);
-    return promises;
-  }
-
-  parseSerializedJSON(json: string) {
-    this.parsedComponents = {};
-    this.gameObjects = [];
-    this.activeCamera = null;
-
-    Promise.all(this.parseComponents(json)).then(() => {
-      const SceneJSON = JSON.parse(json);
-
-      const gameObjects = SceneJSON.gameObjects;
-      if (!gameObjects) return;
-      // Loop through each of the game objects in the JSON list
-      for (const jsonObject of gameObjects) {
-        const gameObject = new GameObject(jsonObject.name);
-        gameObject.parentName = jsonObject.parent;
-
-        // Attach all the components in the JSON to the game object
-        for (const jsonComponent of jsonObject.components) {
-          const componentProps: Record<string, any> = {};
-
-          // Go through each prop name, and parse the given data
-
-          // TODO: This parsing logic is bad
-
-          if (jsonComponent.name in this.parsedComponents)
-            for (const [k, v] of Object.entries(
-              (this.parsedComponents as any)[jsonComponent.name]
-            )) {
-              const innerCo = jsonComponent as Record<string, any>;
-              let foundProp = returnDefaultValue((v as any).type);
-
-              if (k in innerCo) {
-                foundProp = returnValidatedProperty(
-                  innerCo[k],
-                  (v as any).type
-                );
-              }
-
-              componentProps[k] = foundProp;
-            }
-
-          // `jsonComponent.name` should be one of the component names, otherwise
-          // the program will crash
-          // TODO: Scene validation; maybe?
-          type ComponentName = keyof typeof DefaultComponents;
-
-          let ComponentClass = GameComponent;
-
-          if (jsonComponent.name in DefaultComponents)
-            ComponentClass =
-              DefaultComponents[jsonComponent.name as ComponentName];
-
-          const component: any = new ComponentClass(
-            jsonComponent.name,
-            gameObject,
-            componentProps //still pass in if needed
-          );
-
-          //pre-assign component properties (only validated props)
-          for (const [k, v] of Object.entries(componentProps)) {
-            if (k in component) component[k] = v;
-          }
-
-          gameObject.attachComponent(component);
-        }
-
-        this.addGameObject(gameObject);
-      }
-
-      for (const gameObject of this.gameObjects) {
-        if (gameObject.parentName !== "") {
-          const foundParent = this.findGameObject(gameObject.parentName);
-          if (foundParent) gameObject.setParent(foundParent);
-        }
-      }
-    });
   }
 
   override render() {

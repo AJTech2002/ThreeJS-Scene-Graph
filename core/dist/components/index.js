@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultComponentNames = exports.returnDefaultValue = exports.returnValidatedProperty = exports.TransformComponentProps = exports.CameraComponentProps = exports.MeshComponentProps = exports.Scene = exports.Input = exports.GameObject = exports.TransformComponent = exports.MeshComponent = exports.CameraComponent = exports.GameComponent = exports.DefaultComponentProps = exports.DefaultComponents = void 0;
+exports.DefaultComponentNames = exports.parseType = exports.returnDefaultValue = exports.returnValidatedProperty = exports.TransformComponentProps = exports.CameraComponentProps = exports.MeshComponentProps = exports.Scene = exports.Input = exports.GameObject = exports.TransformComponent = exports.MeshComponent = exports.CameraComponent = exports.GameComponent = exports.DefaultComponentProps = exports.DefaultComponents = void 0;
 const GameComponent_1 = __importDefault(require("./GameComponent"));
 Object.defineProperty(exports, "GameComponent", { enumerable: true, get: function () { return GameComponent_1.default; } });
 const CameraComponent_1 = __importDefault(require("./CameraComponent"));
@@ -54,6 +54,7 @@ exports.DefaultComponentProps = {
     CameraComponentProps,
     TransformComponentProps,
 };
+//Handling custom types (right now just vec3, eul3)
 const returnValidatedProperty = (value, type) => {
     //Handle custom types (cant directly be serialized by json)
     if (type === "vec3")
@@ -82,4 +83,11 @@ const returnDefaultValue = (type) => {
     return {};
 };
 exports.returnDefaultValue = returnDefaultValue;
+const parseType = (type, val) => {
+    if (type === "vec3" || type === "eul3") {
+        return [val.x, val.y, val.z];
+    }
+    return val;
+};
+exports.parseType = parseType;
 exports.DefaultComponentNames = Object.keys(exports.DefaultComponents);

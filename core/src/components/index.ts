@@ -36,6 +36,7 @@ export {
   TransformComponentProps,
 };
 
+//Handling custom types (right now just vec3, eul3)
 export const returnValidatedProperty = (value: any, type: string) => {
   //Handle custom types (cant directly be serialized by json)
 
@@ -57,6 +58,14 @@ export const returnDefaultValue = (type: string) => {
   if (type === "dict") return {};
 
   return {};
+};
+
+export const parseType = (type: string, val: any) => {
+  if (type === "vec3" || type === "eul3") {
+    return [val.x, val.y, val.z];
+  }
+
+  return val;
 };
 
 export const DefaultComponentNames = Object.keys(DefaultComponents);
