@@ -10,6 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "@types/three": "^0.133.0",
-    "three": "^0.133.1"
+    "three": "^0.133.1",
+    "yup": "^0.32.10"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.3"
   }
 }
