@@ -1,11 +1,4 @@
-import file, {
-  fstat,
-  readFile,
-  readFileSync,
-  stat,
-  statSync,
-  writeFileSync,
-} from "fs";
+import file, { readFileSync, writeFileSync } from "fs";
 import { propGeneratorJS } from "./generatorFiles";
 
 const defaultComponentNames = [
