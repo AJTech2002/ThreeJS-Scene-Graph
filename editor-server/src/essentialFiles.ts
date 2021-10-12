@@ -1,5 +1,4 @@
 import file, { readFileSync, writeFileSync } from "fs";
-import { propGeneratorJS } from "./generatorFiles";
 import { DefaultComponentNames } from "@razor/core";
 const defaultComponentNames = DefaultComponentNames;
 
@@ -23,13 +22,6 @@ export const writeFileInFolder = (
 export const createFolderStructure = (rootFolder: string, rootName: string) => {
   createFolderIfDoesntExist(rootFolder, rootName);
   createFolderIfDoesntExist(rootFolder + "/" + rootName, "component-props");
-  createFolderIfDoesntExist(rootFolder + "/" + rootName, "utility");
-  createFolderIfDoesntExist(rootFolder + "/" + rootName, "defaultComponents");
-  writeFileInFolder(
-    rootFolder + "/" + rootName + "/utility",
-    "propGenerator.ts",
-    propGeneratorJS
-  );
   writeFileInFolder(
     rootFolder + "/" + rootName,
     "scene.json",
@@ -38,17 +30,6 @@ export const createFolderStructure = (rootFolder: string, rootName: string) => {
   }`
   );
 };
-
-// export const writeDefaultComponents = (rootFolder: string) => {
-//   defaultComponentNames.forEach((defaultComp) => {
-//     let input: string =
-//       __dirname.replace("\\src", "/public") +
-//       `/storage/defaultComponents/${defaultComp}.ts`;
-//     let output: string = rootFolder + `/${defaultComp}.ts`;
-//     if (file.existsSync(input) && !file.existsSync(output))
-//       file.copyFileSync(input, output);
-//   });
-// };
 
 export const writeComponentsJSON = (
   root: string,
