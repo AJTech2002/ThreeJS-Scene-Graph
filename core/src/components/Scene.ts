@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import GameObject from "./GameObject";
 
-import { returnValidatedProperty } from "../utility/propGenerator";
+import { returnValidatedProperty } from "./";
 import Input from "./Input";
 import { Vector2 } from "three";
 

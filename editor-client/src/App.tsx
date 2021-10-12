@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import EditorScene from "./scene-parsed/editor-utilities/EditorScene";
+import EditorScene from "./editor-utilities/EditorScene"
 import Editor from "./editor-utilities/Editor";
 
 //To be selected with file picker soon (dev project root)

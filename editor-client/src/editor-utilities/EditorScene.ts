@@ -1,12 +1,15 @@
 import * as THREE from "three";
-import { GameObject, Input, GameComponent, Scene } from "@razor/core";
-import { DefaultComponents } from "../components";
 import {
+  GameObject,
+  Input,
+  GameComponent,
+  Scene,
   returnDefaultValue,
   returnValidatedProperty,
-} from "../utility/propGenerator";
+  DefaultComponents,
+} from "@razor/core";
 import { Vector2 } from "three";
-import { getData, projectRoot } from "../../App";
+import { getData, projectRoot } from "../App";
 
 export default class EditorScene extends Scene {
   public scene: THREE.Scene;

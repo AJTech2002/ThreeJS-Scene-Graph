@@ -39,4 +39,6 @@ export declare const DefaultComponentProps: {
     };
 };
 export { GameComponent, CameraComponent, MeshComponent, TransformComponent, GameObject, Input, Scene, MeshComponentProps, CameraComponentProps, TransformComponentProps, };
+export declare const returnValidatedProperty: (value: any, type: string) => any;
+export declare const returnDefaultValue: (type: string) => {} | null;
 export declare const DefaultComponentNames: string[];

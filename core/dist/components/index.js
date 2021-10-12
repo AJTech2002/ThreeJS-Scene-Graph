@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultComponentNames = exports.TransformComponentProps = exports.CameraComponentProps = exports.MeshComponentProps = exports.Scene = exports.Input = exports.GameObject = exports.TransformComponent = exports.MeshComponent = exports.CameraComponent = exports.GameComponent = exports.DefaultComponentProps = exports.DefaultComponents = void 0;
+exports.DefaultComponentNames = exports.returnDefaultValue = exports.returnValidatedProperty = exports.TransformComponentProps = exports.CameraComponentProps = exports.MeshComponentProps = exports.Scene = exports.Input = exports.GameObject = exports.TransformComponent = exports.MeshComponent = exports.CameraComponent = exports.GameComponent = exports.DefaultComponentProps = exports.DefaultComponents = void 0;
 const GameComponent_1 = __importDefault(require("./GameComponent"));
 Object.defineProperty(exports, "GameComponent", { enumerable: true, get: function () { return GameComponent_1.default; } });
 const CameraComponent_1 = __importDefault(require("./CameraComponent"));
@@ -37,6 +37,7 @@ const Scene_1 = __importDefault(require("./Scene"));
 Object.defineProperty(exports, "Scene", { enumerable: true, get: function () { return Scene_1.default; } });
 const TransformComponent_1 = __importDefault(require("./TransformComponent"));
 Object.defineProperty(exports, "TransformComponent", { enumerable: true, get: function () { return TransformComponent_1.default; } });
+const three_1 = require("three");
 const MeshComponentProps = __importStar(require("../component-props/MeshComponent.props.json"));
 exports.MeshComponentProps = MeshComponentProps;
 const CameraComponentProps = __importStar(require("../component-props/CameraComponent.props.json"));
@@ -53,4 +54,32 @@ exports.DefaultComponentProps = {
     CameraComponentProps,
     TransformComponentProps,
 };
+const returnValidatedProperty = (value, type) => {
+    //Handle custom types (cant directly be serialized by json)
+    if (type === "vec3")
+        return new three_1.Vector3(value[0], value[1], value[2]);
+    if (type === "eul3")
+        return new three_1.Euler(value[0], value[1], value[2]);
+    return value;
+};
+exports.returnValidatedProperty = returnValidatedProperty;
+const returnDefaultValue = (type) => {
+    //All supported serializable types
+    if (type === "vec3")
+        return new three_1.Vector3(0, 0, 0);
+    if (type === "eul3")
+        return new three_1.Euler(0, 0, 0);
+    if (type === "float")
+        return 0;
+    if (type === "string")
+        return "";
+    if (type === "none")
+        return null;
+    if (type === "boolean" || type === "bool")
+        return false;
+    if (type === "dict")
+        return {};
+    return {};
+};
+exports.returnDefaultValue = returnDefaultValue;
 exports.DefaultComponentNames = Object.keys(exports.DefaultComponents);

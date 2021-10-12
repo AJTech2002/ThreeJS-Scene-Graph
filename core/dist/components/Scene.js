@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const THREE = __importStar(require("three"));
 const GameObject_1 = __importDefault(require("./GameObject"));
-const propGenerator_1 = require("../utility/propGenerator");
+const _1 = require("./");
 const Input_1 = __importDefault(require("./Input"));
 class Scene {
     constructor() {
@@ -102,7 +102,7 @@ class Scene {
                 for (const prop of jsonComponent.props) {
                     const innerCo = jsonComponent;
                     if (prop in innerCo && returnProperty(jsonComponent.name, prop)) {
-                        let foundProp = (0, propGenerator_1.returnValidatedProperty)(innerCo[prop], returnProperty(jsonComponent.name, prop).type);
+                        let foundProp = (0, _1.returnValidatedProperty)(innerCo[prop], returnProperty(jsonComponent.name, prop).type);
                         componentProps[prop] = foundProp;
                     }
                 }
