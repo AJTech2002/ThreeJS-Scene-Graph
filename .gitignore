@@ -40,6 +40,11 @@ dev-project/node_modules
 editor/node_modules
 editor/client/node_modules
 
+# Compiled code
+
+editor/dist
+dev-project/dist
+
 # TypeScript v1 declaration files
 typings/
 
