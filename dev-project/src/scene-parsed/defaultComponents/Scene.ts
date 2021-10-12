@@ -99,11 +99,14 @@ export default class Scene {
         // TODO: This parsing logic is bad
         for (const prop of jsonComponent.props) {
           const innerCo = jsonComponent as Record<string, any>;
-          let foundProp = returnValidatedProperty(
-            innerCo[prop],
-            returnProperty(jsonComponent.name, prop).type
-          );
-          componentProps[prop] = foundProp;
+
+          if (prop in innerCo && returnProperty(jsonComponent.name, prop)) {
+            let foundProp = returnValidatedProperty(
+              innerCo[prop],
+              returnProperty(jsonComponent.name, prop).type
+            );
+            componentProps[prop] = foundProp;
+          }
         }
 
         // `jsonComponent.name` should be one of the component names, otherwise
