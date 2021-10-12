@@ -6,6 +6,7 @@ import Editor from "./editor-utilities/Editor";
 //To be selected with file picker soon (dev project root)
 export const projectRoot =
   "C:/Users/Ajay/Desktop/Personal Projects/ThreeJS-Scene-Graph/dev-project";
+
 export const server = "http://localhost:8000";
 const apiEndpoint = (endpoint: string): string => server + "/" + endpoint;
 
