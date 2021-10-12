@@ -13,6 +13,8 @@ export default class GameObject {
   public parent: GameObject | null;
   public parentName: string;
 
+  private lastParentName: string = "";
+
   constructor(name: string) {
     this.instantiated = false;
     this.name = name;
@@ -66,10 +68,16 @@ export default class GameObject {
     if (this.instantiated) component?.awake();
   }
 
-  update(dt: number) {
+  update(dt: number, editor: boolean) {
+    if (this.lastParentName !== this.parentName) {
+      this.parent = this.scene!.findGameObject(
+        this.parentName
+      ) as GameObject | null;
+      this.lastParentName = this.parentName;
+    }
     this.components.forEach((c) => {
       c?.update(dt);
-      c?.executeOnEditorUpdate();
+      if (editor) c.executeOnEditorUpdate();
     });
   }
 }

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Quaternion } from "three";
-import GameComponent from "../../editor-client/src/scene-parsed/defaultComponents/GameComponent";
-import GameObject from "../../editor-client/src/scene-parsed/defaultComponents/GameObject";
+import GameComponent from "./GameComponent";
+import GameObject from "./GameObject";
 
 export default class MeshComponent extends GameComponent {
   public mesh: THREE.Mesh | null;

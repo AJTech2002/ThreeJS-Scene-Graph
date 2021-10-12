@@ -1,13 +1,14 @@
 import { Intersection, Vector2, Vector3 } from "three";
-import GameComponent from "../scene-parsed/defaultComponents/GameComponent";
-import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
-import GameObject from "../scene-parsed/defaultComponents/GameObject";
+import { GameComponent, MeshComponent, GameObject } from "@razor/core";
 
 export default class MoveObject extends GameComponent {
   public time: number = 0;
 
   //[prop speed float]
   public speed: number = 0;
+
+  //[prop rotationSpeed float]
+  public rotationSpeed: number = 0;
 
   override awake() {
     this.time = 0;
@@ -55,7 +56,7 @@ export default class MoveObject extends GameComponent {
 
     this.gameObject.transform!.rotateOnAxis(
       new Vector3(0, 1, 0),
-      -this.input!.getRawHorizontal() * dt * 10 * this.speed
+      -this.input!.getRawHorizontal() * dt * 10 * this.rotationSpeed
     );
     this.gameObject.transform?.position.add(inputVector);
   }

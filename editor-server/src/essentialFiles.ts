@@ -1,22 +1,7 @@
-import file, {
-  fstat,
-  readFile,
-  readFileSync,
-  stat,
-  statSync,
-  writeFileSync,
-} from "fs";
+import file, { readFileSync, writeFileSync } from "fs";
 import { propGeneratorJS } from "./generatorFiles";
-
-const defaultComponentNames = [
-  "CameraComponent",
-  "GameComponent",
-  "GameObject",
-  "Input",
-  "MeshComponent",
-  "Scene",
-  "TransformComponent",
-];
+import { DefaultComponentNames } from "@razor/core";
+const defaultComponentNames = DefaultComponentNames;
 
 export const createFolderIfDoesntExist = (pathA: string, pathB: string) => {
   if (!file.existsSync(pathA + "/" + pathB)) {
@@ -54,16 +39,16 @@ export const createFolderStructure = (rootFolder: string, rootName: string) => {
   );
 };
 
-export const writeDefaultComponents = (rootFolder: string) => {
-  defaultComponentNames.forEach((defaultComp) => {
-    let input: string =
-      __dirname.replace("\\src", "/public") +
-      `/storage/defaultComponents/${defaultComp}.ts`;
-    let output: string = rootFolder + `/${defaultComp}.ts`;
-    if (file.existsSync(input) && !file.existsSync(output))
-      file.copyFileSync(input, output);
-  });
-};
+// export const writeDefaultComponents = (rootFolder: string) => {
+//   defaultComponentNames.forEach((defaultComp) => {
+//     let input: string =
+//       __dirname.replace("\\src", "/public") +
+//       `/storage/defaultComponents/${defaultComp}.ts`;
+//     let output: string = rootFolder + `/${defaultComp}.ts`;
+//     if (file.existsSync(input) && !file.existsSync(output))
+//       file.copyFileSync(input, output);
+//   });
+// };
 
 export const writeComponentsJSON = (
   root: string,
@@ -124,6 +109,22 @@ export const writeComponentsJS = (
     return e.replace(absoluteRoot, "..");
   });
 
+  let defaultComponentList = "";
+  for (let i = 0; i < defaultComponentNames.length; i++) {
+    if (i !== defaultComponentNames.length - 1)
+      defaultComponentList +=
+        defaultComponentNames[i] +
+        "," +
+        defaultComponentNames[i] +
+        "Props" +
+        ",";
+    else
+      defaultComponentList +=
+        defaultComponentNames[i] + "," + defaultComponentNames[i] + "Props";
+  }
+
+  fileString += `import {${defaultComponentList}} from '@razor/core';\n`;
+
   for (let i = 0; i < relativeComponentPaths.length; i++) {
     fileString += `import ${componentNames[i]} from '${relativeComponentPaths[i]}'; \n`;
     fileString += `import * as ${
@@ -133,18 +134,24 @@ export const writeComponentsJS = (
 
   fileString += "export const Components = {\n";
   for (let i = 0; i < componentNames.length; i++) {
-    if (i !== componentNames.length - 1)
-      fileString += componentNames[i] + "," + "\n";
-    else fileString += componentNames[i] + "\n";
+    fileString += componentNames[i] + "," + "\n";
+  }
+  for (let i = 0; i < defaultComponentNames.length; i++) {
+    if (i !== defaultComponentNames.length - 1)
+      fileString += defaultComponentNames[i] + "," + "\n";
+    else fileString += defaultComponentNames[i] + "\n";
   }
   fileString += "};\n\n";
 
   fileString += "export const returnProperty = (component, property) => { \n";
   fileString += "const ComponentProperties = {\n";
   for (let i = 0; i < componentNames.length; i++) {
-    if (i !== componentNames.length - 1)
-      fileString += componentNames[i] + "Props," + "\n";
-    else fileString += componentNames[i] + "Props" + "\n";
+    fileString += componentNames[i] + "Props," + "\n";
+  }
+  for (let i = 0; i < defaultComponentNames.length; i++) {
+    if (i !== defaultComponentNames.length - 1)
+      fileString += defaultComponentNames[i] + "Props," + "\n";
+    else fileString += defaultComponentNames[i] + "Props" + "\n";
   }
   fileString += "};\n";
   fileString += `return ComponentProperties[component+"Props"].default[property]; \n`;

@@ -13,7 +13,6 @@ export default class CameraComponent extends GameComponent {
   override awake() {
     super.awake();
     this!.gameObject!.scene!.activeCamera = this.camera;
-    this!.transform!.position.z += 5;
   }
 
   override update() {

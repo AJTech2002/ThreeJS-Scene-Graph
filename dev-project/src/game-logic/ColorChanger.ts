@@ -1,5 +1,4 @@
-import GameComponent from "../scene-parsed/defaultComponents/GameComponent";
-import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
+import { GameComponent, MeshComponent } from "@razor/core";
 
 export default class ColorChanger extends GameComponent {
   public time: number = 0;

@@ -1,10 +1,6 @@
 import { Vector2 } from "three";
 import Scene from "./Scene";
 
-interface Dictionary<T> {
-  [Key: string]: T;
-}
-
 enum MouseButtons {
   Left = 1,
   Middle = 2,
@@ -13,7 +9,7 @@ enum MouseButtons {
 }
 
 export default class Input {
-  public inputMappings: Dictionary<boolean>;
+  public inputMappings: any;
   public scene: Scene | null;
   public mousePosition: Vector2;
   public mouseButtons: MouseButtons = MouseButtons.None;

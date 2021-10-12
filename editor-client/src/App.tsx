@@ -1,11 +1,10 @@
 import React from "react";
 import "./App.css";
-import Scene from "./scene-parsed/defaultComponents/Scene";
+import EditorScene from "./scene-parsed/editor-utilities/EditorScene";
 import Editor from "./editor-utilities/Editor";
 
 //To be selected with file picker soon (dev project root)
-export const projectRoot =
-  "C:/Users/Ajay/Desktop/Personal Projects/ThreeJS-Scene-Graph/dev-project";
+export const projectRoot = "../dev-project";
 
 export const server = "http://localhost:8000";
 const apiEndpoint = (endpoint: string): string => server + "/" + endpoint;
@@ -33,7 +32,7 @@ const sync = () => {
 
 function App() {
   const viewportRef: any = React.useRef();
-  const scene: Scene = new Scene();
+  const scene: EditorScene = new EditorScene();
   const editor = new Editor(scene);
   //TODO: Convert Scene Camera to Camera Component
 
@@ -42,7 +41,7 @@ function App() {
       editor.editorLoop();
     });
     getData("sceneJSON", `?root=${projectRoot}`).then((d) => {
-      scene.parseScene(d);
+      scene.parseSerializedJSON(d);
     });
     scene.render();
   });
@@ -65,7 +64,7 @@ function App() {
               editor.editorLoop();
             });
             getData("sceneJSON", `?root=${projectRoot}`).then((d) => {
-              scene.parseScene(d);
+              scene.parseSerializedJSON(d);
             });
             scene.render();
           }}

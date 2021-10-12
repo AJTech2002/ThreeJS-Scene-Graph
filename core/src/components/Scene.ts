@@ -1,20 +1,20 @@
 import * as THREE from "three";
-import * as SceneJSON from "../scene.json";
 import GameObject from "./GameObject";
-import { Components, returnProperty } from "../components";
+
 import { returnValidatedProperty } from "../utility/propGenerator";
 import Input from "./Input";
 import { Vector2 } from "three";
 
 export default class Scene {
   public scene: THREE.Scene;
-  public activeCamera: THREE.Camera | null;
+  public isEditor: boolean = false;
+  public activeCamera: THREE.PerspectiveCamera | null;
   public renderer: THREE.Renderer;
   public clock: THREE.Clock;
   public gameObjects: GameObject[];
   public externalUpdate: null | ((delta?: number) => void);
   public inputSystem: Input;
-  private raycaster: THREE.Raycaster | null = null;
+  protected raycaster: THREE.Raycaster | null = null;
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -33,9 +33,19 @@ export default class Scene {
     this.raycaster = new THREE.Raycaster();
   }
 
+  onWindowResize() {
+    if (this.activeCamera) {
+      this.activeCamera.aspect = window.innerWidth / window.innerHeight;
+      this.activeCamera.updateProjectionMatrix();
+
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+  }
+
   setup(domElement: HTMLElement, externalUpdate: Scene["externalUpdate"]) {
     this.externalUpdate = externalUpdate;
     domElement.appendChild(this.renderer.domElement);
+    window.addEventListener("resize", this.onWindowResize.bind(this), false);
     this.inputSystem.setup();
   }
 
@@ -72,9 +82,19 @@ export default class Scene {
     return this.gameObjects.find((e) => e.name === name) || null;
   }
 
-  parseScene() {
-    const gameObjects = SceneJSON.gameObjects;
+  parseScene(componentDeclarations: any, sceneJSON: string) {
+    let returnProperty = componentDeclarations.returnProperty;
+    let Components = componentDeclarations.Components;
 
+    //Hello
+    let parsedJSON = JSON.parse(sceneJSON);
+
+    let gameObjects = parsedJSON["gameObjects"];
+
+    if (!gameObjects && parsedJSON["default"] !== undefined) {
+      gameObjects = parsedJSON["default"]["gameObjects"];
+      if (!gameObjects) return;
+    }
     // Loop through each of the game objects in the JSON list
     for (const jsonObject of gameObjects) {
       const gameObject = new GameObject(jsonObject.name);
@@ -89,11 +109,14 @@ export default class Scene {
         // TODO: This parsing logic is bad
         for (const prop of jsonComponent.props) {
           const innerCo = jsonComponent as Record<string, any>;
-          let foundProp = returnValidatedProperty(
-            innerCo[prop],
-            returnProperty(jsonComponent.name, prop).type
-          );
-          componentProps[prop] = foundProp;
+
+          if (prop in innerCo && returnProperty(jsonComponent.name, prop)) {
+            let foundProp = returnValidatedProperty(
+              innerCo[prop],
+              returnProperty(jsonComponent.name, prop).type
+            );
+            componentProps[prop] = foundProp;
+          }
         }
 
         // `jsonComponent.name` should be one of the component names, otherwise
@@ -132,7 +155,7 @@ export default class Scene {
     requestAnimationFrame(this.render);
 
     for (const gameObject of this.gameObjects) {
-      gameObject.update(delta);
+      gameObject.update(delta, this.isEditor);
     }
 
     if (this.activeCamera) this.renderer.render(this.scene, this.activeCamera);

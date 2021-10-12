@@ -1,5 +1,5 @@
-import GameObject from "../defaultComponents/GameObject";
-import Scene from "../defaultComponents/EditorScene";
+import { GameObject } from "@razor/core";
+import Scene from "../editor-utilities/EditorScene";
 import * as dat from "dat.gui";
 
 export default class Editor {

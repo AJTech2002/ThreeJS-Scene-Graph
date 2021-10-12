@@ -1,9 +1,13 @@
+import {
+  DefaultComponentNames,
+  DefaultComponentProps,
+  DefaultComponents,
+} from "@razor/core";
 import express, { Request, Response, Application, Express } from "express";
 import { readFileSync } from "fs";
 import {
   createFolderStructure,
   writeComponentsJS,
-  writeDefaultComponents,
   writeFileInFolder,
 } from "./essentialFiles";
 
@@ -34,7 +38,7 @@ app.post("/api/initialize-project", (req: Request, res: Response): void => {
 
   createFolderStructure(location + "/src", "scene-parsed");
 
-  writeDefaultComponents(location + "/src/scene-parsed/defaultComponents");
+  // writeDefaultComponents(location + "/src/scene-parsed/defaultComponents");
 
   if (location) {
     let files = findJSFilesInFolder(location + "/src");
@@ -59,6 +63,21 @@ app.get("/sceneJSON", (req: Request, res: Response): void => {
 });
 
 app.get("/componentJSON", (req: Request, res: Response): void => {
+  if (Object.keys(DefaultComponents).includes(req.query.component as string)) {
+    let propNames: string[] = Object.keys(DefaultComponentProps);
+
+    let queryComponentProp: string = req.query.component + "Props";
+
+    let jsonObjects = DefaultComponentProps as any;
+
+    if (propNames.includes(queryComponentProp)) {
+      let jsonObj: any = jsonObjects[queryComponentProp];
+      let jsonStr: string = JSON.stringify(jsonObj);
+      res.send(jsonStr);
+      return;
+    }
+  }
+
   let json = readFileSync(
     req.query.root +
       `/src/scene-parsed/component-props/${req.query.component}.props.json`

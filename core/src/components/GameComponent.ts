@@ -22,7 +22,6 @@ export default class GameComponent {
   onKeyDown(key: string) {}
 
   onKeyUp(key: string) {}
-  
 
   // We can use this loop in the editor to match props to props
   executeOnEditorUpdate() {}
