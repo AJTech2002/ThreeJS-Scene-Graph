@@ -1,6 +1,9 @@
 import './App.css';
 import { useEffect, useRef } from 'react';
-import Scene from './scene-parsed/defaultComponents/Scene';
+import { Scene } from '@razor/core';
+
+import * as Components from './scene-parsed/components'
+import * as SceneJSON from './scene-parsed/scene.json';
 
 function App() {
 
@@ -11,7 +14,7 @@ function App() {
 
   useEffect(() => {
     scene.setup(viewportRef.current);
-    scene.parseScene();
+    scene.parseScene(Components, JSON.stringify(SceneJSON));
     scene.render();
   });
 

@@ -1,5 +1,4 @@
-import GameComponent from "../scene-parsed/defaultComponents/GameComponent";
-import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
+import { GameComponent } from "@razor/core";
 
 export default class HelloComponent extends GameComponent {
   //[prop openText string]
