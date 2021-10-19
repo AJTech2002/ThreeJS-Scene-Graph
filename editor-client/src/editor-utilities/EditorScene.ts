@@ -3,10 +3,8 @@ import { GameObject, Input, Scene } from "@razor/core";
 import { Vector2 } from "three";
 import {
   serialize,
-  parseComponents,
   parseSerializedJSON,
 } from "./EditorSceneParsing";
-import { getData, projectRoot } from "../server-utilities/serverHandler";
 
 export default class EditorScene extends Scene {
   public scene: THREE.Scene;

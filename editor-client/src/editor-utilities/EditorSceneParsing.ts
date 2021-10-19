@@ -13,8 +13,9 @@ import EditorScene from "./EditorScene";
 
 function returnComponentJSON(componentName: string): Promise<any> {
   //found JSON
+
   return getData(
-    "componentJSON",
+    "api/component-json",
     `?root=${projectRoot}&component=${componentName}`
   ).then((d: string): any => {
     try {

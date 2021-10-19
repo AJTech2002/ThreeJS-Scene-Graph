@@ -48,11 +48,12 @@ export const loadProject = (
   viewportRef: any,
   editor: Editor
 ) => {
+  getData("api/scene-json", `?root=${projectRoot}`).then((d) => {
+    console.log(d);
+    scene.parseSerializedJSON(d);
+  });
   scene.setup(viewportRef.current, () => {
     editor.editorLoop();
-  });
-  getData("sceneJSON", `?root=${projectRoot}`).then((d) => {
-    scene.parseSerializedJSON(d);
   });
   scene.render();
 };
