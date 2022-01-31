@@ -2,6 +2,7 @@ import Scene from "./Scene";
 import GameComponent from "./GameComponent";
 import TransformComponent from "./TransformComponent";
 import Input from "./Input";
+import { Object3D, Vector3 } from "three";
 
 export default class GameObject {
   public scene: Scene | null;
@@ -12,6 +13,7 @@ export default class GameObject {
   public threeJSScene: THREE.Scene | null;
   public parent: GameObject | null;
   public parentName: string;
+  public storedThreeObject: Object3D | null;
 
   constructor(name: string) {
     this.instantiated = false;
@@ -22,6 +24,18 @@ export default class GameObject {
     this.scene = null;
     this.parent = null;
     this.parentName = "";
+    this.storedThreeObject = null;
+  }
+
+  static default(name: string, pos: Vector3, scale: Vector3 = new Vector3(1, 1, 1)) {
+    let tempGameObject: GameObject = new GameObject(name);
+    let transformComponent: TransformComponent = new TransformComponent("TransformComponent", tempGameObject, {});
+
+    transformComponent.position = pos;
+    transformComponent.scale = scale;
+
+    tempGameObject.attachComponent(transformComponent);
+    return tempGameObject;
   }
 
   awake() {

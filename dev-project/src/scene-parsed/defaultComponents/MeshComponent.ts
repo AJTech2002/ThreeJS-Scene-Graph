@@ -18,6 +18,19 @@ export default class MeshComponent extends GameComponent {
     this.mesh = null;
   }
 
+  public static attachCube(gameObject: GameObject): MeshComponent {
+    let meshComponent: MeshComponent = new MeshComponent("MeshComponent", gameObject, {});
+    meshComponent.primitive = true;
+    meshComponent.primitiveShape = "Cube";
+    meshComponent.color = "9342f5";
+    gameObject.attachComponent(meshComponent);
+    return meshComponent;
+  }
+
+  setVisibility(visible: boolean) {
+    this.mesh!.visible = visible;
+  }
+
   override awake() {
     super.awake();
 
@@ -26,7 +39,7 @@ export default class MeshComponent extends GameComponent {
     if (this.primitive) {
       if (this.primitiveShape === "Cube" && this.gameObject.threeJSScene) {
         const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshBasicMaterial({
+        const material = new THREE.MeshLambertMaterial({
           color: parseInt(this.color, 16),
         });
         this.mesh = new THREE.Mesh(geometry, material);
@@ -36,6 +49,7 @@ export default class MeshComponent extends GameComponent {
         tempMesh.gameObject = this.gameObject;
 
         this.gameObject.threeJSScene.add(this.mesh);
+        this.gameObject.storedThreeObject = this.mesh;
       }
     }
   }

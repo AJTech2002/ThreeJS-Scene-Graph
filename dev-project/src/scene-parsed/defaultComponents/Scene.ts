@@ -4,7 +4,8 @@ import GameObject from "./GameObject";
 import { Components, returnProperty } from "../components";
 import { returnValidatedProperty } from "../utility/propGenerator";
 import Input from "./Input";
-import { Vector2 } from "three";
+import { Object3D, Vector2, Vector3 } from "three";
+import RaycastHit from "./RaycastHit";
 
 export default class Scene {
   public scene: THREE.Scene;
@@ -14,7 +15,8 @@ export default class Scene {
   public gameObjects: GameObject[];
   public externalUpdate: null | ((delta?: number) => void);
   public inputSystem: Input;
-  private raycaster: THREE.Raycaster | null = null;
+  public raycaster: THREE.Raycaster | null = null;
+  private gridHelper: THREE.GridHelper;
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -31,6 +33,11 @@ export default class Scene {
     this.inputSystem = new Input(this);
 
     this.raycaster = new THREE.Raycaster();
+
+    this.gridHelper = new THREE.GridHelper(100, 100);
+
+    this.scene.add(this.gridHelper);
+
   }
 
   setup(domElement: HTMLElement, externalUpdate: Scene["externalUpdate"]) {
@@ -48,11 +55,44 @@ export default class Scene {
     });
   }
 
+  screenRaycastObjects(screenPosition: Vector2, gameObjects: GameObject[]): RaycastHit | null {
+    if (this.activeCamera) {
+      this.raycaster!.setFromCamera(screenPosition, this.activeCamera);
+
+      let found: RaycastHit | null = null;
+
+      gameObjects.forEach((go) => {
+        if (go.storedThreeObject) {
+          const intersections: THREE.Intersection[] = this.raycaster!.intersectObject(go.storedThreeObject);
+
+          if (intersections.length > 0) {
+            const hit = new RaycastHit();
+            hit.gameObject = go;
+            hit.intersection = intersections[0];
+            found = hit;
+          }
+
+        }
+      });
+
+      return found;
+    }
+
+    return null;
+  }
+
   screenRaycast(screenPosition: Vector2): THREE.Intersection[] {
     if (this.activeCamera) {
       this.raycaster!.setFromCamera(screenPosition, this.activeCamera);
 
-      return this.raycaster!.intersectObjects(this.scene.children);
+      let visibleObject: Object3D[] = [];
+
+      this.gameObjects.forEach((go) => {
+        if (go.storedThreeObject)
+          visibleObject.push(go.storedThreeObject);
+      });
+
+      return this.raycaster!.intersectObjects(visibleObject);
     }
 
     return [];
@@ -73,6 +113,7 @@ export default class Scene {
   }
 
   parseScene() {
+
     const gameObjects = SceneJSON.gameObjects;
 
     // Loop through each of the game objects in the JSON list

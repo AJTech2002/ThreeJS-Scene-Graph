@@ -14,12 +14,17 @@ export default class CameraComponent extends GameComponent {
     super.awake();
     this!.gameObject!.scene!.activeCamera = this.camera;
     this!.transform!.position.z += 5;
+    this.gameObject.storedThreeObject = this.camera;
   }
 
   override update() {
     super.update();
-    this.camera.setRotationFromEuler(
-      this.transform?.getTransformedRotation() as Euler
+    // this.camera.setRotationFromEuler(
+    //   this.transform?.getTransformedRotation() as Euler
+    // );
+
+    this.camera.setRotationFromQuaternion(
+      this.transform?.quaternion!
     );
 
     this.camera.position.copy(

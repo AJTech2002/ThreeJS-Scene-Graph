@@ -13,16 +13,27 @@ export default class GameComponent {
     this.name = name;
     this.gameObject = gameObject;
     this.props = componentProps;
+
   }
 
-  awake() {}
+  setProps(props: any) {
+    for (const [key, value] of Object.entries(props)) {
+      if (key in this) {
+        let a: any = this;
+        a[key] = props[key];
+        console.log("Found : " + a[key]);
+      }
+    }
+  }
 
-  update(dt?: number) {}
+  awake() { }
 
-  onKeyDown(key: string) {}
+  update(dt?: number) { }
 
-  onKeyUp(key: string) {}
+  onKeyDown(key: string) { }
+
+  onKeyUp(key: string) { }
 
   // We can use this loop in the editor to match props to props
-  executeOnEditorUpdate() {}
+  executeOnEditorUpdate() { }
 }

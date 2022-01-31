@@ -33,6 +33,69 @@ export default class TransformComponent extends GameComponent {
     );
   }
 
+  vec4ToVec3(vec4: Vector4) {
+    return new Vector3(vec4.x, vec4.y, vec4.z);
+  }
+
+  lookAt(x: number, y: number, z: number) {
+
+    let _m1: Matrix4 = new Matrix4();
+    let _q1: Quaternion = new Quaternion();
+
+    _m1.lookAt(this.position.clone(), new Vector3(x, y, z), this.vec4ToVec3(this.localToWorld(new Vector3(0, 1, 0))));
+
+    this.quaternion.setFromRotationMatrix(_m1);
+
+    if (this.gameObject.parent) {
+
+      _m1.extractRotation(this.gameObject.parent!.transform!.matrix!);
+      _q1.setFromRotationMatrix(_m1);
+      this.quaternion = this.quaternion.premultiply(_q1.invert());
+    }
+
+  }
+
+
+  localToWorld = (vec: Vector3): Vector4 => {
+    let vector = new THREE.Vector4(vec.x, vec.y, vec.z, 0);
+    return vector.applyMatrix4(this.matrix!);
+  }
+
+  worldToLocal = (vec: Vector3): Vector4 => {
+    let vector = new THREE.Vector4(vec.x, vec.y, vec.z, 0);
+    const _m1 = new THREE.Matrix4();
+    return vector.applyMatrix4(this.matrix!.clone().invert());
+  }
+
+  rotateOnWorldAxis(axis: Vector3, angle: number) {
+
+    let _q1: Quaternion = new Quaternion();
+    _q1.setFromAxisAngle(axis, angle);
+    this.quaternion = this.quaternion.premultiply(_q1);
+  }
+
+  rotateAround = (pivot: Vector3, axis: Vector3, theta: number) => {
+
+    let invDir = this.transform!.position.clone().sub(pivot.clone());
+
+    let dirVec: any = this.worldToLocal(invDir.clone());
+
+    this.position.copy(pivot.clone());
+
+    this.updateTransform();
+
+    this.rotateOnWorldAxis(axis, theta);
+
+    this.updateTransform();
+
+    let moveDir: Vector4 = this.localToWorld(dirVec.clone());
+
+    this.position = (pivot.clone().add(new THREE.Vector3(moveDir.x, moveDir.y, moveDir.z)));
+
+    this.updateTransform();
+  }
+
+
   rotateOnAxis(axis: Vector3, angle: number) {
     let newQuat = new THREE.Quaternion()
       .setFromAxisAngle(axis.normalize(), angle)
