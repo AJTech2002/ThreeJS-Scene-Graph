@@ -8,6 +8,15 @@ export default class GroundUnit extends GameComponent {
 
     public currentX: number = 0;
     public currentY: number = 0;
+
+    public totalUnitStamina: number = 100;
+    public currentStamina: number;
+
+    constructor(name: string, gameObject: GameObject, componentProps: any) {
+        super(name, gameObject, componentProps);
+        this.currentStamina = this.totalUnitStamina;
+    }
+
     private gameManager: GameManager | null = null;
 
     public static create(origin: Vector3, index: number, xCoord: number, yCoord: number): GameObject {
@@ -24,13 +33,15 @@ export default class GroundUnit extends GameComponent {
 
     override awake() {
         this.gameManager = this.gameObject.scene!.findGameObject("GameManager")!.findComponentOfType<GameManager>("GameManager")!;
+        this.gameManager!.tileComponentAt(this.currentX, this.currentY)!.occupied = true;
     }
 
 
     step() {
 
-        let moveAway = false;
+        this.currentStamina = this.totalUnitStamina;
 
+        let moveAway = false;
         this.gameManager!.units.forEach((u) => {
             if (u !== this)
                 if (u.transform!.position.distanceTo(this.transform!.position) <= 1.5) {
@@ -43,11 +54,15 @@ export default class GroundUnit extends GameComponent {
         else {
 
             this.move(1 * (Math.random() < 0.5 ? -1 : 1), 0);
+
         }
 
     }
 
     move(h: number, v: number) {
+
+        if (this.currentStamina < 100) return;
+
         if (v > 1) v = 1;
         if (h > 1) h = 1;
         if (v < -1) v = -1;
@@ -55,11 +70,19 @@ export default class GroundUnit extends GameComponent {
 
         const tile: GameObject | null = this.gameManager!.tileAt(this.currentX + h, this.currentY + v);
 
-        if (tile) {
+        console.log(this.gameManager!.tileComponentAt(this.currentX + h, this.currentY + v));
+
+        if (tile && this.gameManager!.tileComponentAt(this.currentX + h, this.currentY + v)!.occupied === false) {
+
+            this.gameManager!.tileComponentAt(this.currentX, this.currentY)!.occupied = false;
+            this.gameManager!.tileComponentAt(this.currentX + h, this.currentY + v)!.occupied = true;
 
             this.transform!.position! = new Vector3(tile?.transform?.position.x, tile!.transform!.position.y + 1, tile?.transform?.position.z);
+
             this.currentX = this.currentX + h;
             this.currentY = this.currentY + v;
+
+            this.currentStamina -= 100;
 
         }
 

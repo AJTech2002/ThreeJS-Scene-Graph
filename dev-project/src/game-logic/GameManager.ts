@@ -4,12 +4,14 @@ import GameObject from "../scene-parsed/defaultComponents/GameObject";
 import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
 import RaycastHit from "../scene-parsed/defaultComponents/RaycastHit";
 import GroundUnit from "./GroundUnit";
+import TileComponent from "./TileComponent";
 
 export default class GameManager extends GameComponent {
 
     public size: number = 30;
     public tiles: GameObject[] = [];
     public tileDictionary: any = {};
+    public tileComponentDictionary: any = {};
 
     override awake() {
         // setup the grid
@@ -28,6 +30,7 @@ export default class GameManager extends GameComponent {
                 this.gameObject.scene?.addGameObject(tile);
                 this.tiles.push(tile);
                 this.tileDictionary[`${x}_${y}`] = tile;
+                this.tileComponentDictionary[`${x}_${y}`] = tile.findComponentOfType<TileComponent>("TileComponent");
             }
         }
 
@@ -40,9 +43,20 @@ export default class GameManager extends GameComponent {
         meshComponent.primitive = true;
         meshComponent.primitiveShape = "Cube";
 
+        let tileComponent: TileComponent = new TileComponent("TileComponent", tileObject, {});
+
+        tileObject.attachComponent(tileComponent);
         tileObject.attachComponent(meshComponent);
 
         return tileObject;
+    }
+
+    tileComponentAt(x: number, y: number): TileComponent | null {
+        if (`${x}_${y}` in this.tileDictionary) {
+            return this.tileComponentDictionary[`${x}_${y}`] as TileComponent;
+        }
+
+        return null;
     }
 
     tileAt(x: number, y: number): GameObject | null {
