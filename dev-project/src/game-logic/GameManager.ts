@@ -67,6 +67,14 @@ export default class GameManager extends GameComponent {
         return null;
     }
 
+    death(groundUnit: GroundUnit) {
+        let index = this.units.indexOf(groundUnit);
+        if (index > -1) {
+            this.units.splice(index, 1);
+        }
+
+
+    }
 
     override onKeyDown(key: string) {
 

@@ -34,6 +34,10 @@ export default class GameComponent {
 
   onKeyUp(key: string) { }
 
+  destroy() {
+    console.warn(`Destroy for ${this.name} has not been implemented`);
+  }
+
   // We can use this loop in the editor to match props to props
   executeOnEditorUpdate() { }
 }

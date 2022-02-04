@@ -12,7 +12,7 @@ export default class Scene {
   public activeCamera: THREE.Camera | null;
   public renderer: THREE.Renderer;
   public clock: THREE.Clock;
-  public gameObjects: GameObject[];
+  public gameObjects: (GameObject | null)[];
   public externalUpdate: null | ((delta?: number) => void);
   public inputSystem: Input;
   public raycaster: THREE.Raycaster | null = null;
@@ -48,8 +48,8 @@ export default class Scene {
 
   //Type 0 (Down), 1 (Up)
   inputEvent(type: number, key: string) {
-    this.gameObjects.forEach((go: GameObject) => {
-      if (go.instantiated) {
+    this.gameObjects.forEach((go: GameObject | null) => {
+      if (go && go.instantiated) {
         go.inputEvent(type, key);
       }
     });
@@ -88,7 +88,7 @@ export default class Scene {
       let visibleObject: Object3D[] = [];
 
       this.gameObjects.forEach((go) => {
-        if (go.storedThreeObject)
+        if (go && go.storedThreeObject)
           visibleObject.push(go.storedThreeObject);
       });
 
@@ -108,8 +108,20 @@ export default class Scene {
     gameObject.awake();
   }
 
+  destroy(gameObject: GameObject) {
+    const index = this.gameObjects.indexOf(gameObject);
+    if (index > -1) {
+      delete this.gameObjects[index];
+      this.gameObjects.splice(index, 1); // 2nd parameter means remove one item only
+    }
+
+    gameObject.destroy();
+
+
+  }
+
   findGameObject(name: string) {
-    return this.gameObjects.find((e) => e.name === name) || null;
+    return this.gameObjects.find((e) => (e) ? e.name === name : false) || null;
   }
 
   parseScene() {
@@ -161,7 +173,7 @@ export default class Scene {
     }
 
     for (const gameObject of this.gameObjects) {
-      if (gameObject.parentName !== "") {
+      if (gameObject && gameObject.parentName !== "") {
         const foundParent = this.findGameObject(gameObject.parentName);
         if (foundParent) gameObject.setParent(foundParent);
       }
@@ -173,7 +185,8 @@ export default class Scene {
     requestAnimationFrame(this.render);
 
     for (const gameObject of this.gameObjects) {
-      gameObject.update(delta);
+      if (gameObject)
+        gameObject.update(delta);
     }
 
     if (this.activeCamera) this.renderer.render(this.scene, this.activeCamera);

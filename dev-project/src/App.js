@@ -9,6 +9,7 @@ import TransformComponent from './scene-parsed/defaultComponents/TransformCompon
 import { Color, Vector3 } from 'three';
 import FreeFlyCamera from './game-logic/FreeFlyCamera';
 import Light from './scene-parsed/defaultComponents/Light';
+import VisitorTest from './interpreter/VisitorTest';
 
 function App() {
 
@@ -67,6 +68,10 @@ function App() {
     scene.scene.background = new Color(0xa2e6f5);
 
     scene.render();
+
+    let test = new VisitorTest();
+
+
   });
 
   return (

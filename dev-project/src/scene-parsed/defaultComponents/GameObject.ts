@@ -8,7 +8,7 @@ export default class GameObject {
   public scene: Scene | null;
   public instantiated: boolean;
   public name: string;
-  public components: GameComponent[];
+  public components: (GameComponent | null)[];
   public transform: TransformComponent | null;
   public threeJSScene: THREE.Scene | null;
   public parent: GameObject | null;
@@ -38,6 +38,7 @@ export default class GameObject {
     return tempGameObject;
   }
 
+
   awake() {
     this.transform = this.findComponent(
       "TransformComponent"
@@ -46,14 +47,30 @@ export default class GameObject {
     if (!this.transform) console.error("No transform found on : " + this.name);
 
     this.components.forEach((c) => {
-      c.input = this.getInput();
-      c.transform = this.transform;
-      c?.awake();
+      if (c) {
+        c.input = this.getInput();
+        c.transform = this.transform;
+        c?.awake();
+      }
     });
   }
 
   setParent(gameObject: GameObject) {
     this.parent = gameObject;
+  }
+
+  destroy() {
+    this.components.forEach((c) => {
+      c?.destroy();
+      c = null;
+    });
+
+    for (let i = 0; i < this.components.length; i++) {
+      this.components[i] = null;
+    }
+    
+    this.instantiated = false;
+    console.log(this.components);
   }
 
   getInput(): Input | undefined {
@@ -65,14 +82,16 @@ export default class GameObject {
   }
 
   inputEvent(type: number, key: string) {
-    this.components.forEach((comp: GameComponent) => {
-      if (type === 0) comp.onKeyDown(key);
-      else if (type === 1) comp.onKeyUp(key);
+    this.components.forEach((comp: GameComponent | null) => {
+      if (comp) {
+        if (type === 0) comp.onKeyDown(key);
+        else if (type === 1) comp.onKeyUp(key);
+      }
     });
   }
 
   findComponent(name: string) {
-    return this.components.find((e) => e.name === name) || null;
+    return this.components.find((e) => (e) ? e.name === name : false) || null;
   }
 
   attachComponent(component: GameComponent) {

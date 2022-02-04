@@ -54,6 +54,13 @@ export default class MeshComponent extends GameComponent {
     }
   }
 
+  override destroy(): void {
+
+    if (this.mesh)
+      this.gameObject.threeJSScene?.remove(this.mesh!);
+    super.destroy();
+  }
+
   override update() {
     super.update();
     if (this.mesh && this.gameObject.transform?.matrix) {

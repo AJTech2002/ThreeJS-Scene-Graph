@@ -22,7 +22,7 @@ ColorChangerProps,
 MoveObjectProps,
 CameraComponentProps,
 MeshComponentProps,
-TransformComponentProps
+TransformComponentProps,
 };
 return ComponentProperties[component+"Props"].default[property]; 
 }

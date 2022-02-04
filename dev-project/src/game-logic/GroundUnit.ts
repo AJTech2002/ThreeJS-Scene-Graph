@@ -2,12 +2,15 @@ import { Vector3 } from "three";
 import GameComponent from "../scene-parsed/defaultComponents/GameComponent";
 import GameObject from "../scene-parsed/defaultComponents/GameObject";
 import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
+import ControllableComponent from "./ControllableComponent";
 import GameManager from "./GameManager";
 
-export default class GroundUnit extends GameComponent {
+export default class GroundUnit extends ControllableComponent {
 
     public currentX: number = 0;
     public currentY: number = 0;
+
+    public health: number = 100;
 
     public totalUnitStamina: number = 100;
     public currentStamina: number;
@@ -39,9 +42,14 @@ export default class GroundUnit extends GameComponent {
 
     step() {
 
+        if (this.health <= 0) this.death();
+
         this.currentStamina = this.totalUnitStamina;
 
         let moveAway = false;
+
+        console.log("Units", this.gameManager!.units);
+
         this.gameManager!.units.forEach((u) => {
             if (u !== this)
                 if (u.transform!.position.distanceTo(this.transform!.position) <= 1.5) {
@@ -53,10 +61,16 @@ export default class GroundUnit extends GameComponent {
             this.move(0, -1);
         else {
 
-            this.move(1 * (Math.random() < 0.5 ? -1 : 1), 0);
-
+            //this.move(1 * (Math.random() < 0.5 ? -1 : 1), 0);
+            this.death();
         }
 
+    }
+
+    death() {
+        this.gameManager!.tileComponentAt(this.currentX, this.currentY)!.occupied = false;
+        this.gameObject.scene?.destroy(this.gameObject);
+        this.gameManager?.death(this);
     }
 
     move(h: number, v: number) {
@@ -70,7 +84,7 @@ export default class GroundUnit extends GameComponent {
 
         const tile: GameObject | null = this.gameManager!.tileAt(this.currentX + h, this.currentY + v);
 
-        console.log(this.gameManager!.tileComponentAt(this.currentX + h, this.currentY + v));
+        //console.log(this.gameManager!.tileComponentAt(this.currentX + h, this.currentY + v));
 
         if (tile && this.gameManager!.tileComponentAt(this.currentX + h, this.currentY + v)!.occupied === false) {
 

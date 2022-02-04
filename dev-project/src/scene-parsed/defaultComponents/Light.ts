@@ -21,6 +21,7 @@ export default class Light extends GameComponent {
         this.transform?.lookAt(0, 0, 0);
     }
 
+
     override update() {
         super.update();
 
