@@ -4,7 +4,10 @@ export default class MemoryStore {
 
     public memoryStore: any = {};
 
+    public verbose: boolean = false;
+
     public availableVariables: string[] = [];
+    public readOnlyVariables: string[] = [];
     //public availableMethods: string[] = [];
 
     constructor() {
@@ -12,7 +15,8 @@ export default class MemoryStore {
     }
 
     createVariable(varName: string, varDefaultValue: string) {
-        console.log("CREATE", this.memoryStore);
+        if (this.verbose)
+            console.log("CREATE", this.memoryStore);
         this.memoryStore[varName] = varDefaultValue;
     }
 
@@ -23,12 +27,14 @@ export default class MemoryStore {
     registerFunction(functionName: string) {
         if (('this' in this.memoryStore)) {
             this.availableVariables.push(functionName);
+            this.readOnlyVariables.push(functionName);
         }
     }
 
-    registerVariable(variableName: string) {
+    registerVariable(variableName: string, readOnly: boolean = false) {
         if (('this' in this.memoryStore)) {
             this.availableVariables.push(variableName);
+            if (readOnly) this.readOnlyVariables.push(variableName);
         }
     }
 
@@ -43,7 +49,8 @@ export default class MemoryStore {
 
     setVariable(varName: string, newValue: string) {
         this.memoryStore[varName] = newValue;
-        console.log("SET", this.memoryStore);
+        if (this.verbose)
+            console.log("SET", this.memoryStore);
     }
 
     log() {

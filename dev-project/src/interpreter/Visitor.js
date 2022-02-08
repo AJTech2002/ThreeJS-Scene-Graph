@@ -1,7 +1,11 @@
 export default class Visitor {
 
+
+
+
     constructor(memStore) {
         this.memoryStore = memStore;
+        this.verbose = false;
     }
 
     /* Deal with nodes in an array */
@@ -34,12 +38,17 @@ export default class Visitor {
             case 'BinaryExpression': return this.visitBinaryExpression(node);
             case 'CallExpression': return this.visitCallExpression(node);
             case 'MemberExpression': return this.evaluateMemberExpression(node);
-            case 'ThisExpression': return this.memoryStore['this'];
+            case 'ThisExpression': return this.memoryStore.memoryStore['this'];
+            case 'UnaryExpression': return this.evaluateUnaryExpression(node);
             default: return this.visitNode(node);
         }
     }
 
 
+    evaluateUnaryExpression(node) {
+        let val = this.getValue(node.argument);
+        if (node.operator === "-") return val * -1;
+    }
 
     visitLogicalExpression(node) {
         let leftValue = this.getValue(node.left);
@@ -69,7 +78,8 @@ export default class Visitor {
         let leftValue = this.getValue(node.left);
         let rightValue = this.getValue(node.right);
 
-        console.log(`${leftValue} ${node.operator} ${rightValue}`, eval(`${leftValue} ${node.operator} ${rightValue}`));
+        if (this.verbose)
+            console.log(`${leftValue} ${node.operator} ${rightValue}`, eval(`${leftValue} ${node.operator} ${rightValue}`));
         //TODO: Remove EVAL it has too many privileges -- check symbol & execute logic on that ((https://stackoverflow.com/questions/2276021/evaluating-a-string-as-a-mathematical-expression-in-javascript))
         return eval(`${leftValue} ${node.operator} ${rightValue}`);
     }
@@ -82,7 +92,7 @@ export default class Visitor {
 
     setMemberedExpression(callList, value) {
         callList = this.convToArray(callList);
-        if (this.memoryStore.variableExists(callList[0])) {
+        if (callList[0] !== 'this' && this.memoryStore.variableExists(callList[0])) {
 
             //Fix this mess later
             if (callList.length === 1)
@@ -93,6 +103,16 @@ export default class Visitor {
                 this.memoryStore.findVariable(callList[0])[callList[1]][callList[2]] = value;
             else if (callList.length === 4)
                 this.memoryStore.findVariable(callList[0])[callList[1]][callList[2]][callList[3]] = value;
+        }
+        else if (callList[0] === 'this') {
+            if (this.memoryStore.availableVariables.includes(callList[1])) {
+                if (this.memoryStore.readOnlyVariables.includes(callList[1])) {
+                    console.log("Can't Assign to read only variable", callList[1]);
+                }
+                else {
+                    this.memoryStore.findVariable('this')[callList[1]] = value;
+                }
+            }
         }
         else {
             window[callList[0]] = value;
@@ -111,6 +131,8 @@ export default class Visitor {
 
     visitAssignmentExpression(expression) {
         let expressionIdentifier = this.visitNode(expression.left);
+        if (this.verbose)
+            console.log(expressionIdentifier);
         this.setMemberedExpression(expressionIdentifier, this.visitNode(expression.right));
     }
 
@@ -121,8 +143,10 @@ export default class Visitor {
         expression.arguments.map((arg) => {
             evaledArgs.push(this.getValue(arg));
         });
-        console.log(currentObject);
-        console.log(currentObject, "CALLS", evaledArgs, currentObject(...evaledArgs));
+        if (this.verbose) {
+            console.log(currentObject);
+            console.log(currentObject, "CALLS", evaledArgs, currentObject(...evaledArgs));
+        }
         return currentObject(...evaledArgs);
     }
 
@@ -131,8 +155,10 @@ export default class Visitor {
 
         let decomposedObj = this.visitNode(expression.property);
 
-        console.log("Object Name", objectName);
-        console.log("Property ", decomposedObj);
+        if (this.verbose)
+            console.log("Object Name", objectName);
+        if (this.verbose)
+            console.log("Property ", decomposedObj);
         if (typeof decomposedObj === 'string') {
             if (typeof objectName === 'string')
                 var objectHierarchy = [objectName, decomposedObj];
@@ -155,8 +181,8 @@ export default class Visitor {
 
         let callHierarchy = this.visitNode(memberNode);
         let lookingForLocalObject = false;
-
-        console.log(callHierarchy);
+        if (this.verbose)
+            console.log(callHierarchy);
 
         if (typeof (callHierarchy) === 'string')
             callHierarchy = [callHierarchy];
@@ -167,8 +193,8 @@ export default class Visitor {
             }
 
             var currentObject = (lookingForLocalObject) ? this.memoryStore.findVariable(callHierarchy[0]) : window[callHierarchy[0]];
-
-            console.log(currentObject);
+            if (this.verbose)
+                console.log(currentObject);
 
             for (let i = 1; i < callHierarchy.length; i++) {
 
@@ -178,7 +204,8 @@ export default class Visitor {
                 }
 
                 currentObject = currentObject[callHierarchy[i]];
-                console.log(currentObject);
+                if (this.verbose)
+                    console.log(currentObject);
 
             }
         }

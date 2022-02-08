@@ -1,5 +1,5 @@
 import './App.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Scene from './scene-parsed/defaultComponents/Scene';
 import GameObject from './scene-parsed/defaultComponents/GameObject';
 import GameManager from './game-logic/GameManager';
@@ -10,29 +10,40 @@ import { Color, Vector3 } from 'three';
 import FreeFlyCamera from './game-logic/FreeFlyCamera';
 import Light from './scene-parsed/defaultComponents/Light';
 import VisitorTest from './interpreter/VisitorTest';
+import UnitSelector from './components/UnitSelector';
 
 function App() {
 
   const viewportRef = useRef();
   const scene = new Scene();
 
+  const [gameManagerC, setGameManager] = useState(new GameManager("GameManager", null, {}));
+
+  const codeRef = useRef();
+  const awakeCodeRef = useRef();
+
+  const [selectedUnit, setSelectedUnit] = useState(undefined);
+
   //TODO: Convert Scene Camera to Camera Component
+
+
 
   useEffect(() => {
     scene.setup(viewportRef.current);
     //scene.parseScene();
 
     //Setup Camera & GameManager
-    let gameManager = GameObject.default("GameManager", new Vector3(0, 0, -10));
+
 
     // let meshComponent = new MeshComponent("MeshComponent", gameManager);
     // meshComponent.primitive = true;
     // meshComponent.primitiveShape = "Cube";
 
     //gameManager.attachComponent(meshComponent);
+    let gameManager = GameObject.default("GameManager", new Vector3(0, 0, -10));
+    let gameManagerComponent = gameManagerC;
 
-
-    gameManager.attachComponent(new GameManager("GameManager", gameManager, {}));
+    gameManager.attachComponent(gameManagerComponent);
 
     let camera = GameObject.default("Camera", new Vector3(0, 5, 0));
     camera.attachComponent(new CameraComponent("CameraComponent", camera, {}));
@@ -69,14 +80,35 @@ function App() {
 
     scene.render();
 
-    let test = new VisitorTest();
+    ///let test = new VisitorTest();
 
 
-  });
+  }, []);
+
 
   return (
     <div className="App" ref={viewportRef}>
-
+      {selectedUnit === undefined ? <div className="selection-sidebar" style={{ display: 'flex', justifyContent: 'center' }}>
+        <UnitSelector type={"Ground Unit"} onSelected={(t) => {
+          setSelectedUnit(t);
+          gameManagerC.unitType = t;
+        }}></UnitSelector>
+      </div> : <div className="selection-sidebar" style={{ display: 'flex', alignItems: 'center', color: 'white', flexDirection: 'column' }}>
+        <h3>{selectedUnit}</h3>
+        <div contentEditable={true} ref={awakeCodeRef} style={{ width: '100%' }}>
+          // AWAKE
+        </div>
+        <div contentEditable={true} ref={codeRef} style={{ width: '100%' }}>
+          console.log("Hello World");
+        </div>
+        <div style={{ height: 50 }} ></div>
+        <button onMouseDown={() => { setSelectedUnit(undefined); gameManagerC.unitType = ""; }}>Back</button>
+        <button onMouseDown={() => {
+          console.log("Saving", codeRef.current.innerText);
+          gameManagerC.unitCode = codeRef.current.innerText;
+          gameManagerC.unitAwakeCode = awakeCodeRef.current.innerText;
+        }}>Save</button>
+      </div>}
     </div>
   );
 }

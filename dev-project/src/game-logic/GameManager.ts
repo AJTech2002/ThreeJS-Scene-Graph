@@ -5,6 +5,8 @@ import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
 import RaycastHit from "../scene-parsed/defaultComponents/RaycastHit";
 import GroundUnit from "./GroundUnit";
 import TileComponent from "./TileComponent";
+import TurretUnit from "./TurretUnit";
+import Unit from "./Unit";
 
 export default class GameManager extends GameComponent {
 
@@ -12,6 +14,11 @@ export default class GameManager extends GameComponent {
     public tiles: GameObject[] = [];
     public tileDictionary: any = {};
     public tileComponentDictionary: any = {};
+
+    //UI Controlled Options
+    public unitCode: string = "";
+    public unitAwakeCode: string = "";
+    public unitType: string = "";
 
     override awake() {
         // setup the grid
@@ -67,7 +74,7 @@ export default class GameManager extends GameComponent {
         return null;
     }
 
-    death(groundUnit: GroundUnit) {
+    death(groundUnit: Unit) {
         let index = this.units.indexOf(groundUnit);
         if (index > -1) {
             this.units.splice(index, 1);
@@ -85,7 +92,7 @@ export default class GameManager extends GameComponent {
 
     private timer: number = 0;
 
-    public units: GroundUnit[] = [];
+    public units: Unit[] = [];
 
     override update(dt: number) {
 
@@ -110,13 +117,26 @@ export default class GameManager extends GameComponent {
                 const xCoord: number = parseInt(nameSplit[1]);
                 const yCoord: number = parseInt(nameSplit[2]);
 
-                const unit: GameObject = GroundUnit.create(intersects.gameObject!.transform!.position, this.spawnedUnitIndex, xCoord, yCoord);
-                this.spawnedUnitIndex++;
-                this.gameObject.scene?.addGameObject(unit);
+                console.log(this.unitCode);
 
-                const unitC: GroundUnit = unit.findComponentOfType<GroundUnit>("GroundUnit")!;
+                if (this.unitType === "Ground Unit") {
+                    const unit: GameObject = GroundUnit.create(intersects.gameObject!.transform!.position, this.spawnedUnitIndex, xCoord, yCoord, this.unitType, this.unitCode, this.unitAwakeCode);
+                    this.spawnedUnitIndex++;
+                    this.gameObject.scene?.addGameObject(unit);
 
-                this.units.push(unitC);
+                    const unitC: GroundUnit = unit.findComponentOfType<GroundUnit>("GroundUnit")!;
+
+                    this.units.push(unitC);
+                }
+                else if (this.unitType === "Turret Unit") {
+                    const unit: GameObject = TurretUnit.create(intersects.gameObject!.transform!.position, this.spawnedUnitIndex, xCoord, yCoord, this.unitType, this.unitCode, this.unitAwakeCode);
+                    this.spawnedUnitIndex++;
+                    this.gameObject.scene?.addGameObject(unit);
+
+                    const unitC: TurretUnit = unit.findComponentOfType<TurretUnit>("TurretUnit")!;
+
+                    this.units.push(unitC);
+                }
             }
             else if (this.input?.getMouseButton(0) === false) {
                 this.leftMouseClicked = false;

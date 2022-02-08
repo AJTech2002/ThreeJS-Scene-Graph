@@ -68,7 +68,7 @@ export default class GameObject {
     for (let i = 0; i < this.components.length; i++) {
       this.components[i] = null;
     }
-    
+
     this.instantiated = false;
     console.log(this.components);
   }
@@ -96,6 +96,7 @@ export default class GameObject {
 
   attachComponent(component: GameComponent) {
     this.components.push(component);
+    component.gameObject = this;
     if (this.instantiated) component?.awake();
   }
 

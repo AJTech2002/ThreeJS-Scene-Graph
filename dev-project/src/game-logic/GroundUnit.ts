@@ -1,80 +1,50 @@
+import { defaultOptions, parse } from "acorn";
 import { Vector3 } from "three";
 import GameComponent from "../scene-parsed/defaultComponents/GameComponent";
 import GameObject from "../scene-parsed/defaultComponents/GameObject";
 import MeshComponent from "../scene-parsed/defaultComponents/MeshComponent";
 import ControllableComponent from "./ControllableComponent";
 import GameManager from "./GameManager";
+import Unit from "./Unit";
 
-export default class GroundUnit extends ControllableComponent {
-
-    public currentX: number = 0;
-    public currentY: number = 0;
-
-    public health: number = 100;
-
-    public totalUnitStamina: number = 100;
-    public currentStamina: number;
+export default class GroundUnit extends Unit {
 
     constructor(name: string, gameObject: GameObject, componentProps: any) {
         super(name, gameObject, componentProps);
         this.currentStamina = this.totalUnitStamina;
     }
 
-    private gameManager: GameManager | null = null;
 
-    public static create(origin: Vector3, index: number, xCoord: number, yCoord: number): GameObject {
+    public static override create(origin: Vector3, index: number, xCoord: number, yCoord: number, type: string, code: string, awakeCode: string): GameObject {
         // TODO: Use JSON Prefab Definitions
         const temp: GameObject = GameObject.default("GroundUnit-" + index.toString(), new Vector3(origin.x, origin.y + 1, origin.z), new Vector3(1, 2, 1));
         MeshComponent.attachCube(temp);
         let groundUnit: GroundUnit = new GroundUnit("GroundUnit", temp, {});
         groundUnit.currentX = xCoord;
         groundUnit.currentY = yCoord;
+        groundUnit.code = code;
+        groundUnit.awakeCode = awakeCode;
         temp.attachComponent(groundUnit);
         return temp;
     }
 
 
     override awake() {
-        this.gameManager = this.gameObject.scene!.findGameObject("GameManager")!.findComponentOfType<GameManager>("GameManager")!;
-        this.gameManager!.tileComponentAt(this.currentX, this.currentY)!.occupied = true;
+
+        this.move = this.move.bind(this);
+        this.memoryStore.registerFunction("move");
+
+        super.awake();
     }
 
 
-    step() {
+    override step() {
 
-        if (this.health <= 0) this.death();
+        super.step();
 
-        this.currentStamina = this.totalUnitStamina;
-
-        let moveAway = false;
-
-        console.log("Units", this.gameManager!.units);
-
-        this.gameManager!.units.forEach((u) => {
-            if (u !== this)
-                if (u.transform!.position.distanceTo(this.transform!.position) <= 1.5) {
-                    moveAway = true;
-                }
-        });
-
-        if (!moveAway)
-            this.move(0, -1);
-        else {
-
-            //this.move(1 * (Math.random() < 0.5 ? -1 : 1), 0);
-            this.death();
-        }
-
-    }
-
-    death() {
-        this.gameManager!.tileComponentAt(this.currentX, this.currentY)!.occupied = false;
-        this.gameObject.scene?.destroy(this.gameObject);
-        this.gameManager?.death(this);
     }
 
     move(h: number, v: number) {
-
         if (this.currentStamina < 100) return;
 
         if (v > 1) v = 1;

@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.selection-sidebar {
+  width: 40%;
+  height: 100vh;
+  background-color: #282c34;
+  opacity: 0.9;
+  position: absolute;
+}
