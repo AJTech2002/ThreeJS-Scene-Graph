@@ -53,6 +53,8 @@ export default class TransformComponent extends GameComponent {
       this.quaternion = this.quaternion.premultiply(_q1.invert());
     }
 
+
+    this.updateTransform();
   }
 
 

@@ -18,11 +18,11 @@ export default class MeshComponent extends GameComponent {
     this.mesh = null;
   }
 
-  public static attachCube(gameObject: GameObject): MeshComponent {
+  public static attachCube(gameObject: GameObject, color: string = "9342f5"): MeshComponent {
     let meshComponent: MeshComponent = new MeshComponent("MeshComponent", gameObject, {});
     meshComponent.primitive = true;
     meshComponent.primitiveShape = "Cube";
-    meshComponent.color = "9342f5";
+    meshComponent.color = color;
     gameObject.attachComponent(meshComponent);
     return meshComponent;
   }

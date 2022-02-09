@@ -88,8 +88,13 @@ function App() {
 
   return (
     <div className="App" ref={viewportRef}>
-      {selectedUnit === undefined ? <div className="selection-sidebar" style={{ display: 'flex', justifyContent: 'center' }}>
+      {selectedUnit === undefined ? <div className="selection-sidebar" style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+
         <UnitSelector type={"Ground Unit"} onSelected={(t) => {
+          setSelectedUnit(t);
+          gameManagerC.unitType = t;
+        }}></UnitSelector>
+        <UnitSelector type={"Turret Unit"} onSelected={(t) => {
           setSelectedUnit(t);
           gameManagerC.unitType = t;
         }}></UnitSelector>
