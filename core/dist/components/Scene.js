@@ -1,14 +1,18 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function () { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
+}) : function (o, v) {
     o["default"] = v;
 });
 var __importStar = (this && this.__importStar) || function (mod) {
@@ -50,6 +54,10 @@ class Scene {
     }
     setup(domElement, externalUpdate) {
         this.externalUpdate = externalUpdate;
+        // destroy all other children
+        while (domElement.firstChild) {
+            domElement.removeChild(domElement.firstChild);
+        }
         domElement.appendChild(this.renderer.domElement);
         window.addEventListener("resize", this.onWindowResize.bind(this), false);
         this.inputSystem.setup();
@@ -99,6 +107,7 @@ class Scene {
                 const componentProps = {};
                 // Go through each prop name, and parse the given data
                 // TODO: This parsing logic is bad
+                console.log("WOAH", jsonComponent);
                 for (const prop of jsonComponent.props) {
                     const innerCo = jsonComponent;
                     if (prop in innerCo && returnProperty(jsonComponent.name, prop)) {

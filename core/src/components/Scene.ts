@@ -44,6 +44,13 @@ export default class Scene {
 
   setup(domElement: HTMLElement, externalUpdate: Scene["externalUpdate"]) {
     this.externalUpdate = externalUpdate;
+
+    // destroy all other children
+    while (domElement.firstChild) {
+      domElement.removeChild(domElement.firstChild);
+    }
+
+
     domElement.appendChild(this.renderer.domElement);
     window.addEventListener("resize", this.onWindowResize.bind(this), false);
     this.inputSystem.setup();

@@ -1,0 +1,11 @@
+{
+  "speed": {
+    "type": "float"
+  },
+  "rotationSpeed": {
+    "type": "float"
+  },
+  "offset": {
+    "type": "vec3"
+  }
+}

@@ -4,6 +4,7 @@ import { Scene } from '@razor/core';
 
 import * as Components from './scene-parsed/components'
 import * as SceneJSON from './scene-parsed/scene.json';
+import ColorChanger from './scene-parsed/game-logic/ColorChanger';
 
 function App() {
 
@@ -16,7 +17,10 @@ function App() {
     scene.setup(viewportRef.current);
     scene.parseScene(Components, JSON.stringify(SceneJSON));
     scene.render();
-  });
+
+    // var s = scene.findGameObject("Cube0").findComponent("ColorChanger");
+
+  }, []);
 
   return (
     <div className="App" ref={viewportRef}>
